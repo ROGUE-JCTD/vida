@@ -1,0 +1,755 @@
+{% load humanize %}
+{% load vida %}
+<!DOCTYPE html>
+<!--[if IE 8 ]>
+<html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]>
+<html class="no-js ie9" lang="en"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="description" content="{{ object.description }} Learn more about this community's risks.">
+    <meta name="author" content="Prominent Edge LLC">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Community Assessment: {{ object.name }}</title>
+    {% include 'firestation/_favicon.html' %}
+
+
+
+    <script type="text/javascript">
+    var config = {
+      geom: {{ object.geom.json|safe|default:"null" }},
+      centroid: [{{ object.headquarters_address.geom.centroid.y }}, {{ object.headquarters_address.geom.centroid.x }}],
+      id: {{object.id}}
+    }
+    </script>
+
+</head>
+
+<body class="ct-headroom--fixedTopBar cssAnimate" ng-controller="jurisdictionController" ng-app="fireStation">
+
+
+<form class="ct-searchFormMobile ct-u-marginBottom50" role="form">
+    <div class="form-group ">
+        <div class="ct-form--label--type1">
+            <div class="ct-u-displayTableVertical">
+                <div class="ct-u-displayTableCell">
+                    <div class="ct-input-group-btn">
+                        <button class="btn btn-primary">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="ct-u-displayTableCell text-center">
+                    <span>Search for property</span>
+                </div>
+            </div>
+        </div>
+        <div class="ct-u-displayTableVertical ct-u-marginBottom20">
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Property id</label>
+                    <input type="text" required class="form-control input-lg" placeholder="Any">
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Location</label>
+                    <select class="ct-js-select ct-select-lg">
+                        <option value="any">Any</option>
+                        <option value="1">New York</option>
+                        <option value="2">New Jersey</option>
+                        <option value="3">Newark</option>
+                        <option value="4">Philadelphia</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Sub-Location</label>
+                    <select class="ct-js-select ct-select-lg">
+                        <option value="any">Any</option>
+                        <option value="1">New York</option>
+                        <option value="2">Jersey</option>
+                        <option value="3">Newark</option>
+                        <option value="4">Philadelphia</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Property Status</label>
+                    <select class="ct-js-select ct-select-lg">
+                        <option value="any">Any</option>
+                        <option value="1">Sale</option>
+                        <option value="2">New</option>
+                        <option value="3">Loan</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Property type </label>
+                    <select class="ct-js-select ct-select-lg">
+                        <option value="any">Any</option>
+                        <option value="1">Houses</option>
+                        <option value="2">Industrial</option>
+                        <option value="3">Retail</option>
+                        <option value="4">Apartments</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="ct-u-displayTableVertical ct-slider--row">
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Bedrooms</label>
+                    <select class="ct-js-select ct-select-lg">
+                        <option value="any">Any</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3+</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Bathrooms</label>
+                    <select class="ct-js-select ct-select-lg">
+                        <option value="any">Any</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3+</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell ct-u-marginBottom40">
+                <div class="ct-form--item ct-sliderAmount">
+                    <label>Price ($)</label>
+                    <input type="text" value="1000000" required class="form-control input-lg ct-js-slider-min ct-u-marginBottom20" placeholder="">
+                    <input type="text" class="slider ct-js-sliderAmount" value="" data-slider-tooltip="hide" data-slider-handle="square" data-slider-min="5000" data-slider-max="5000000" data-slider-step="5000" data-slider-value="[1000000,2000000]">
+                    <label class="pull-left">Min</label>
+                    <label class="pull-right">Max</label>
+                    <input type="text" value="2000000" required class="form-control input-lg ct-js-slider-max" placeholder="">
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <input type="text" class="slider ct-js-sliderTicks" value="" data-slider-handle="square" data-slider-min="0" data-slider-max="200" data-slider-step="20" data-slider-value="[60,120]"/>
+                <label class="text-center center-block">Area (m2)</label>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <button type="submit" class="btn btn-warning text-capitalize pull-right">search now</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div id="ct-js-wrapper" class="ct-pageWrapper">
+
+<div class="ct-navbarMobile">
+    <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="{% url 'firestation_home' %}"><img src="{{STATIC_URL}}firestation/theme/assets/images/content/logo.png" alt="Estato"> </a>
+    <button type="button" class="searchForm-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span><i class="fa fa-search"></i></span>
+    </button>
+</div>
+
+{% include "firestation/_navbar.html" %}
+
+<div class="ct-site--map">
+    <div class="container">
+        <a href="{% url 'firestation_home' %}">Home</a>
+        <a href="{% url 'firedepartment_list' %}">Departments</a>
+        <a href="{% url 'firedepartment_detail' object.id %}">{{ object.name }}</a>
+    </div>
+</div>
+<header class="ct-mediaSection">
+    <div class="ct-mediaSection-inner">
+        <div class="container">
+            <div class="ct-u-displayTableVertical">
+                <div class="ct-textBox ct-u-text--white ct-u-displayTableCell text-left">
+                    <h2>{{ object.name }}</h2>
+                    <h4>{{ object.headquarters_address.get_row_display }}</h4>
+                    <span class="ct-productID ct-fw-300">
+                        FDID: <span>{{ object.fdid }}</span>
+                    </span>
+                </div>
+                <div class="ct-u-displayTableCell text-right">
+                    <a href="search-grid.html" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="icon-star fa-2x"></i></a>
+                    <a href="javascript:window.print()" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="icon-printer fa-2x"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<section class="ct-u-paddingBottom60">
+    <div class="container">
+        <div class="ct-productMeta--single ">
+            <div class="row">
+                <div class="col-md-8 col-lg-9">
+                    <div class="ct-u-displayTableVertical">
+                        <div class="ct-u-displayTableCell text-left">
+                            <i class="fa fa-clock-o"></i><h6>Last Updated: {{ object.modified }}</h6>
+                        </div>
+                        <div class="ct-u-displayTableCell text-right">
+                            <a href="" ng-click="toggleFullScreenMap()"><i class="fa fa-arrows-alt"></i> View Fullscreen Map</a>
+                        </div>
+                    </div>
+                </div>
+ <!--                <div class="col-md-4 col-lg-3 text-right">
+                    <a href=""><i class="fa fa-times"></i>report abuse</a>
+                </div> -->
+            </div>
+        </div>
+        <div class="ct-section--products">
+            <div class="row">
+                <div class="col-md-8 col-lg-9">
+                    <div class="ct-gallery ct-u-marginBottom30">
+                        <div id="map"></div>
+                    </div>
+                    <div class="ct-heading ct-u-marginBottom20">
+                        <h3>Community Risk Assessment</h3>
+                    </div>
+                    <div class="row ct-u-marginBottom30">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="diamond-control-label diamond-{{object.population_metrics_row.risk_model_fires_quartile | risk_level | default_if_none:'unavailable'}}">
+                                        <div>{{ object.population_metrics_row.risk_model_fires_quartile | risk_level | default_if_none:'n/a'}}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="risk-card">
+                                        <div class="main-content">
+                                            <div class="main-text">
+                                                <div class="ct-product--tilte">
+                                                    Fire Risk
+                                                </div>
+                                                <div class="description">
+                                                    This department falls into the {{ object.population_metrics_row.risk_model_fires_quartile|risk_level|default:'unknown' }} risk category for structure fires when compared to other fire departments with communities of the same size classification.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="diamond-control-label diamond-{{object.population_metrics_row.risk_model_size1_percent_size2_percent_sum_quartile | risk_level | default_if_none:'unavailable'}}">
+                                        <div>{{ object.population_metrics_row.risk_model_size1_percent_size2_percent_sum_quartile | risk_level | default_if_none:'n/a'}}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="risk-card">
+                                        <div class="main-content">
+                                            <div class="main-text">
+                                                <div class="ct-product--tilte">
+                                                    Fire Spread Risk
+                                                </div>
+                                                <div class="description">
+                                                    This department falls into the {{ object.population_metrics_row.risk_model_size1_percent_size2_percent_sum_quartile|risk_level|default:'unknown' }} risk category for the number of fires spread beyond room of origin when compared to other fire departments with communities of the same size classification.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="diamond-control-label diamond-{{object.population_metrics_row.risk_model_deaths_injuries_sum_quartile | risk_level | default_if_none:'unavailable'}}">
+                                        <div>{{ object.population_metrics_row.risk_model_deaths_injuries_sum_quartile | risk_level | default_if_none:'n/a'}}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="risk-card">
+                                        <div class="main-content">
+                                            <div class="main-text">
+                                                <div class="ct-product--tilte">
+                                                    Death and Injury Risk
+                                                </div>
+                                                <div class="description">
+                                                    This department falls into the {{ object.population_metrics_row.risk_model_deaths_injuries_sum_quartile|risk_level|default:'unknown' }} risk category for the number of fire-related deaths and injuries when compared to other fire departments with communities of the same size classification.
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                       <div class="community-risk-legend">
+                           <div>
+                            <div class="diamond-control-label diamond-low diamond-legend"></div>
+                            <span class="help-text"><span class="help-text-category">Low</span><span>: less than 25% of departments have an equal or smaller risk value.</span></span>
+                           </div>
+                           <div>
+                            <div class="diamond-control-label diamond-medium diamond-legend" style="opacity: .5; display: inline-block"></div>
+                            <span class="help-text"><span class="help-text-category">Medium</span><span>: 25-75% of departments have a smaller risk value.</span></span>
+                            </div>
+                           <div>
+                            <div class="diamond-control-label diamond-high diamond-legend" style="opacity: .5; display: inline-block"></div>
+                            <span class="help-text"><span class="help-text-category">High</span><span>: over 75% of departments have an equal or smaller risk value.</span></span>
+                           </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="ct-heading ct-u-marginBottom20">
+                                <h3>Summary</h3>
+                            </div>
+                            <div class="ct-u-displayTableVertical ct-productDetails">
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600">Department Type</span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                        <span>{{ object.department_type }}</span>
+                                    </div>
+                                </div>
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600">NFPA Region</span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                        <span>{{ object.region }}</span>
+                                    </div>
+                                </div>
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600">FDID</span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                        <span>{{ object.fdid }}</span>
+                                    </div>
+                                </div>
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600">State</span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                        <span>{{ object.state }}</span>
+                                    </div>
+                                </div>
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600">Phone</span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                        <span>{{ object.headquarters_phone|default:"Unknown" }}</span>
+                                    </div>
+                                </div>
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600">Fax</span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                        <span>{{ object.headquarters_fax|default:"Unknown" }}</span>
+                                    </div>
+                                </div>
+                                {% if object.website %}
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600"><a href="{{ object.website }}">Official Website <i class="fa fa-external-link ct-fw-600"></i></a></span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="ct-heading ct-u-marginBottom10">
+                                <h3>Description</h3>
+                            </div>
+                            <p class="ct-u-marginBottom50">
+                                {{ object.description }}
+                            </p>
+                            <div class="community-stats ct-u-marginBottom40">
+                                <div class="row">
+                                    <div class="col-md-6 ct-u-marginBottom20">
+                                        <i class="icon-people pull-left"></i>
+                                        {% if object.population %}
+                                            <h4>{{ object.population|intcomma }}</h4>
+                                        {% else %}
+                                            <h4>Not Available</h4>
+                                        {% endif %}
+                                        <h5>Protected Population</h5>
+                                    </div>
+                                    <div class="col-md-6 ct-u-marginBottom20">
+                                        <i class="icon-shield pull-left"></i>
+                                        {% if object.geom_area %}
+                                            <h4>{{ object.geom_area|floatformat:"2"|intcomma}} <span>km&sup2;</span></h4>
+                                        {% else %}
+                                            <h4>Not Available</h4>
+                                        {% endif %}
+                                        <h5>Community Size</h5>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ct-heading ct-u-marginBottom10">
+                                <h3>Residential Structure Fires</h3>
+                            </div>
+                            <p class="ct-u-marginBottom20">Annual residential fire counts for the {{ object.name }} based on the National Fire Incident Reporting System (NFIRS).
+                            </p>
+                            <div class="ct-section--products ct-section--products2col ct-u-marginBottom40">
+                                <table class="table table-striped residential-fires">
+                                    <thead class="ct-fw-700">
+                                        <tr>
+                                            <td align="left">Year</td>
+                                            <td align="left">Residential Fires</td>
+                                            <td align="center">Call Volume</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for stat in object.residential_structure_fire_counts %}
+                                    <tr>
+                                        <td align="left">{{ stat.year }}</td>
+                                        {% if stat.count %}
+                                            <td align="left">{{ stat.count|intcomma|default:"Not Available" }}</td>
+                                        {% else %}
+                                            <td align="left">Not Available</td>
+                                        {% endif %}
+                                        <td align="center" style="width: 70px">
+                                            <bar-gauge min="{{ stat.year_min|floatformat}}" max="{{ stat.year_max|floatformat }}" value="{{ stat.count|default_if_none:'' }}" inverse></bar-gauge>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {% if not firestations %}
+                            <div class="ct-heading ct-u-marginBottom20">
+                            <h3>No stations linked to this department </h3>
+                            </div>
+                            {% else %}
+
+                            <div class="ct-heading ct-u-marginBottom20">
+                                <h3 class="text-uppercase"> {{ firestations.paginator.count }} Stations</h3>
+                            </div>
+                            <div class="ct-section--products ct-section--products2col ct-u-marginBottom30">
+                                <table class="table table-striped" style="font-size:14px;">
+                                    <thead>
+                                    <tr>
+                                        <th>Station Name</th>
+                                        <th>Address</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {%  for station in firestations %}
+                                    <tr>
+                                        <td>{{ station.name }}</td>
+                                        <td>{{ station.address }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        <div class="ct-pagination text-center ct-u-marginBottom30">
+                            <ul class="pagination">
+                                {% if firestations.has_previous %}
+                                        <li><a href="?page={{firestations.previous_page_number }}" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-angle-left"></i></span></a></li>
+                                {% endif %}
+
+                                    {% for p in firestations.paginator.page_range %}
+                                        {% if p != firestations.number %}
+                                             <li><a href="?page={{ p }}">{{ p }}</a></li>
+                                        {% else %}
+                                             <li class="active"><a href="?page={{ p }}">{{ p }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                {% if firestations.has_next %}
+                                        <li><a href="?page={{firestations.next_page_number}}" aria-label="Next"><span aria-hidden="true"><i class="fa fa-angle-right"></i></span></a></li>
+                                {% endif %}
+                                </ul>
+                            </div>
+                            {% endif %} <!-- if not firestations --> 
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-lg-3">
+                    <div class="ct-js-sidebar">
+                        <div class="row">
+                            <div class="col-sm-6 col-md-12 ct-u-marginBottom30">
+                                <gauge description="This department is {{ object.dist_model_score|floatformat }} seconds over the industry standard."
+                                       metric-title="Performance Score" min="{{ population_stats.dist_model_score__min|floatformat }}"
+                                       max="{{ population_stats.dist_model_score__max|floatformat }}" value="{{ object.dist_model_score|floatformat }}" inverse learn-more="{% url 'models_performance_score' %}"></gauge>
+                            </div>
+                            <div class="col-sm-6 col-md-12 ct-u-marginBottom10">
+                                <!-- Safe Grade Cards -->
+                                <div class="metric-cards-title">
+                                    <h4>Safe Grades</h4>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="main-content">
+                                        <div class="main-text">
+                                            <div class="community-risk-legend safe-grade-legend">
+                                               <div>
+                                                <div class="safe-grade-legend-icon low"></div>
+                                                <span class="help-text"><span class="help-text-category">Good</span><span>: less than 25% of departments have an equal or better performance score.</span></span>
+                                               </div>
+                                               <div>
+                                                <div class="safe-grade-legend-icon medium"></div>
+                                                <span class="help-text"><span class="help-text-category">Fair</span><span>: 25-75% of departments have a better performance score.</span></span>
+                                                </div>
+                                               <div>
+                                                <div class="safe-grade-legend-icon high"></div>
+                                                <span class="help-text"><span class="help-text-category">Poor</span><span>: over 75% of departments have an equal or better performance score.</span></span>
+                                               </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="metric-card">
+                                    <label class="control-label {{ dist_model_residential_fires_quartile|risk_level|default_if_none:"unavailable"  }}">{{ dist_model_residential_fires_quartile|grade|default_if_none:"not available"  }}</label>
+                                    <div class="main-content">
+                                        <div class="main-text">
+                                            <div class="ct-product--tilte ct-u-marginTop30 ct-u-marginBottom10">
+                                                Assessment of performance score based on the number of fires.
+                                            </div>
+                                            <div class="description">
+                                                This department's performance score is {{ dist_model_residential_fires_quartile|grade|default_if_none:"not available"  }} when compared to other fire departments with communities of the same size classification and in the {{ object.population_metrics_row.risk_model_fires_quartile|risk_level|default:'unknown' }} risk category for the number of fires.
+                                            </div>
+
+                                            <!-- Dist Score compared against departments in the same population class with a similar fire risk -->
+                                            <!--
+                                            <div class="bullet-chart vida-graph ct-u-marginBottom10 ct-u-marginTop40" id="dist_model_by_fires" style="height: 100%"
+                                                  ranges="{{dist_model_residential_fires_quartile_breaks }}"
+                                                  measures="[{{ object.dist_model_score}}]"
+                                                  markers="[{{ dist_model_residential_fires_quartile_avg }}]"
+                                                  description="POPULATE THIS DESCRIPTION"
+                                                  metric-title="Performance score comparison against departments in a similar risk category."></div>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="metric-card">
+                                    <label class="control-label {{ dist_model_risk_model_greater_than_size_2_quartile|risk_level|default_if_none:"unavailable" }}">{{ dist_model_risk_model_greater_than_size_2_quartile|grade|default_if_none:"not available" }}</label>
+                                    <div class="main-content">
+                                        <div class="main-text">
+                                            <div class="ct-product--tilte ct-u-marginTop30 ct-u-marginBottom10">
+                                                Assessment of performance score based on fire spread risk.
+                                            </div>
+                                            <div class="description">
+                                                This department's performance score is {{ dist_model_risk_model_greater_than_size_2_quartile|grade|default_if_none:"not available"  }} when compared to other fire departments with communities of the same size classification and in the {{ object.population_metrics_row.risk_model_size1_percent_size2_percent_sum_quartile|risk_level|default:'unknown' }} risk category for the portion of fires spread beyond room of origin.
+                                            </div>
+
+                                            <!-- Dist Score compared against departments in the same population class with the fire spread risk -->
+                                            <!--
+                                            <div class="bullet-chart vida-graph ct-u-marginBottom10 ct-u-marginTop40" id="dist_model_by_fire_spread" style="height: 100%"
+                                                  ranges="{{dist_model_risk_model_greater_than_size_2_quartile_breaks }}"
+                                                  measures="[{{ object.dist_model_score}}]"
+                                                  markers="[{{ dist_model_risk_model_greater_than_size_2_quartile_avg }}]"
+                                                  description="POPULATE THIS DESCRIPTION"
+                                                  metric-title="Performance score comparison against departments with a similar fire-spread risk category."></div>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="metric-card">
+                                    <label class="control-label {{ dist_model_risk_model_deaths_injuries_quartile|risk_level|default_if_none:"unavailable"  }}">{{ dist_model_risk_model_deaths_injuries_quartile|grade|default_if_none:"not available"  }}</label>
+                                    <div class="main-content">
+                                        <div class="main-text">
+                                            <div class="ct-product--tilte ct-u-marginTop30 ct-u-marginBottom10">
+                                                Assessment of performance score based on the risk of death and injury.
+                                            </div>
+                                            <div class="description">
+                                                This department's performance score is {{ dist_model_risk_model_deaths_injuries_quartile|grade|default_if_none:"not available"  }} when compared to other fire departments with communities of the same size classification and in the {{ object.population_metrics_row.risk_model_size1_percent_size2_percent_sum_quartile|risk_level|default:'unknown' }} risk category for the number of fires spread beyond room of origin.
+                                            </div>
+                                            <!-- Dist Score compared against departments in the same population class with the same death and injury risk -->
+                                            <!--
+                                            <div class="bullet-chart vida-graph ct-u-marginBottom10 ct-u-marginTop40" id="dist_model_by_death_injury" style="height: 100%"
+                                                  ranges="{{dist_model_risk_model_deaths_injuries_quartile_breaks }}"
+                                                  measures="[{{ object.dist_model_score}}]"
+                                                  markers="[{{ dist_model_risk_model_deaths_injuries_quartile_avg }}]"
+                                                  description="POPULATE THIS DESCRIPTION"
+                                                  metric-title="Performance score comparison against departments with a similar death and injury risk category."></div>-->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="metric-card">
+                                    <label class="control-label {{ national_risk_model_size1_percent_size2_percent_sum_quartile|risk_level|default_if_none:"unavailable"  }}">{{ national_risk_model_size1_percent_size2_percent_sum_quartile|grade|default_if_none:"not available"  }}</label>
+                                    <div class="main-content">
+                                        <div class="main-text">
+                                            <div class="ct-product--tilte ct-u-marginTop30 ct-u-marginBottom10">
+                                                National assessment of performance score based on the fire spread.
+                                            </div>
+                                            <div class="description">
+                                                This department's performance score is {{ national_risk_model_size1_percent_size2_percent_sum_quartile|grade|default_if_none:"not available"  }} when compared to fire departments across the nation in the same fire spread risk category.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="metric-card">
+                                    <label class="control-label {{ national_risk_model_deaths_injuries_sum_quartile|risk_level|default_if_none:"unavailable"  }}">{{ national_risk_model_deaths_injuries_sum_quartile|grade|default_if_none:"not available"  }}</label>
+                                    <div class="main-content">
+                                        <div class="main-text">
+                                            <div class="ct-product--tilte ct-u-marginTop30 ct-u-marginBottom10">
+                                                National assessment of performance score based on the death and injury risk.
+                                            </div>
+                                            <div class="description">
+                                                This department's performance score is {{ national_risk_model_deaths_injuries_sum_quartile|grade|default_if_none:"not available"  }} when compared to fire departments across the nation in the same death and injury risk category.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="main-content">
+                                        <div class="main-text container-fluid">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <span class="ct-fw-600 text-left">Number of fires</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-xs-9">
+                                                    <span class="text-left ct-u-paddingLeft20">Actual</span>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <span class="text-right">{{ object.residential_fires_3_year_avg|floatformat:0|intcomma|default:"N/A" }}</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-xs-9">
+                                                    <span class="text-left ct-u-paddingLeft20">Predicted</span>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <span class="text-right">{{ object.risk_model_fires|floatformat:0|intcomma|default:"N/A" }}</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-xs-9">
+                                                    <span class="text-left ct-u-paddingLeft40">Beyond room</span>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <span class="text-right">{{ object.risk_model_fires_size0|floatformat:0|intcomma|default:"N/A" }}</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-xs-9">
+                                                    <span class="text-left ct-u-paddingLeft40">Beyond floor</span>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <span class="text-right">{{ object.risk_model_fires_size1|floatformat:0|intcomma|default:"N/A" }}</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-xs-9">
+                                                    <span class="text-left ct-u-paddingLeft40">Beyond structure</span>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <span class="text-right">{{ object.risk_model_fires_size2|floatformat:0|intcomma|default:"N/A" }}</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" style="margin-top: 20px;">
+                                                <div class="col-xs-12">
+                                                    <span class="ct-fw-600 text-left">Deaths & injuries</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-xs-9">
+                                                    <span class="text-left ct-u-paddingLeft20">Actual</span>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <span class="text-right">{{ object.nfirs_deaths_and_injuries_sum.count__avg|floatformat:0|intcomma|default:"N/A" }}</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-xs-9">
+                                                    <span class="text-left ct-u-paddingLeft20">Predicted</span>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <span class="text-right">{{ object.deaths_and_injuries_sum|floatformat:0|intcomma|default:"N/A" }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Safe Grade Cards -->
+                              {% comment %}
+                              <div class="line-chart vida-graph ct-u-marginBottom10" id="dist"
+                                      data="{{ performance_data }}"
+                                      description="This department is {{ object.dist_model_score|floatformat|default:"an unknown number of" }} seconds over the industry standard."
+                                      metric-title="Performance Score"
+                                      value="{{ object.dist_model_score }}"
+                                      color="#F5C97E"></div>
+                              <div class="line-chart vida-graph ct-u-marginBottom10" id="risk_deaths"
+                                      data="{{ risk_deaths_data }}"
+                                      description="This department is predicted to have {{ object.risk_model_deaths|floatformat|default:"an unknown number of" }} fire related deaths per year."
+                                      metric-title="Predicted Fire-Related Deaths"
+                                      value="{{ object.risk_model_deaths }}"
+                                      color="#F5C97E"></div>
+                                <div class="line-chart vida-graph ct-u-marginBottom10" id="risk_injuries"
+                                      data="{{ risk_injuries_data }}"
+                                      description="This department is predicted to have {{ object.risk_model_injuries|floatformat|default:"an unknown number of" }} fire related injuries per year."
+                                      metric-title="Predicted Fire-Related Injuries"
+                                      value="{{ object.risk_model_injuries }}"
+                                      color="#F5C97E"></div>
+                                <div class="line-chart vida-graph ct-u-marginBottom10" id="risk_fires"
+                                      data="{{ risk_model_fires }}"
+                                      description="This department is predicted to have {{ object.risk_model_fires|floatformat|default:"an unknown number of" }} fires per year."
+                                      metric-title="Predicted residential fires per year."
+                                      value="{{ object.risk_model_fires }}"
+                                      color="#F5C97E"></div>
+                                 {% endcomment %}
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ct-u-paddingBoth60 ct-js-section" data-bg-color="#f3f3f3">
+    <div class="container">
+        <div class="ct-heading ct-u-marginBottom30">
+            <h3>Similar Departments</h3>
+            <a href="search-list.html" class="pull-right"><i class="fa fa-angle-right"></i>View More</a>
+        </div>
+        <div class="ct-js-owl ct-owl-controls--type2" data-single="false" data-items="4" data-pagination="false">
+            {% for department in object.similar_departments|slice:":15" %}
+            <div class="item">
+                {% include 'firestation/_fire_department_card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% include 'firestation/_footer.html' %}
+</div>
+
+{% include "firestation/_vida_static.html" %}
+{% include 'google_analytics.html' %}
+
+</body>
+</html>

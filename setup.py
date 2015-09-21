@@ -31,7 +31,7 @@ packages, data_files = [], []
 root_dir = os.path.dirname(__file__)
 if root_dir != '':
     os.chdir(root_dir)
-walk_dir = 'firecares'
+walk_dir = 'vida'
 
 excluded_folders = ['uploaded']
 
@@ -55,18 +55,18 @@ install_requires = [
 ]
 
 setup(
-    name="firecares",
+    name="vida",
     version="0.0.1",
     author="Prominent Edge",
     author_email="garnertb@prominentedge.com",
-    description="The FireCARES web application",
+    description="The VIDA web application",
     long_description=(read('README.rst')),
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
     ],
     license="MIT",
-    keywords="firecares iaff",
-    url='https://github.com/FireCARES/firecares',
+    keywords="vida iaff",
+    url='https://github.com/ROGUE-JCTD/vida',
     packages=packages,
     data_files=data_files,
     include_package_data=True,
