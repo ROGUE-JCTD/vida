@@ -149,6 +149,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'vida.vida_core',
     'vida.firestation',
+    'vida.vida',
     'vida.usgs',
     'jsonfield',
     'compressor',

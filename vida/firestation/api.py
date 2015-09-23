@@ -65,6 +65,8 @@ class FireDepartmentResource(ModelResource):
         serializer = PrettyJSONSerializer()
         limit = 120
 
+    def determine_format(self, request):
+        return 'application/json'
 
 class FireStationResource(ModelResource):
     """
@@ -88,6 +90,9 @@ class FireStationResource(ModelResource):
         serializer = PrettyJSONSerializer()
         limit = 120
 
+    def determine_format(self, request):
+        return 'application/json'
+
 
 class StaffingResource(ModelResource):
     """
@@ -107,3 +112,7 @@ class StaffingResource(ModelResource):
         detail_allowed_methods = ['get', 'put', 'delete']
         serializer = PrettyJSONSerializer()
         always_return_data = True
+
+    def determine_format(self, request):
+        return 'application/json'
+

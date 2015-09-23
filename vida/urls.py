@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from .vida_core.forms import VIDAPasswordResetForm
 from .vida_core.views import ForgotUsername
 from .firestation.api import StaffingResource, FireStationResource, FireDepartmentResource
+from .vida.api import PersonResource
 from tastypie.api import Api
 from firestation.views import Home
 
@@ -12,12 +13,14 @@ v1_api = Api(api_name='v1')
 v1_api.register(StaffingResource())
 v1_api.register(FireStationResource())
 v1_api.register(FireDepartmentResource())
+v1_api.register(PersonResource())
 
 
 urlpatterns = patterns('',
     url(r'^$', Home.as_view(), name='firestation_home'),
     (r'^api/', include(v1_api.urls)),
     url(r'^', include('vida.firestation.urls')),
+    url(r'^', include('vida.vida.urls')),
     (r'^accounts/', include('registration.backends.default.urls')),
     url(r'^login/$', 'django.contrib.auth.views.login', name='login', kwargs={'template_name': 'accounts/login.html'}),
     url(r'^password-reset/$', 'django.contrib.auth.views.password_reset',
