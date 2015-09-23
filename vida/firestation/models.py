@@ -1071,5 +1071,5 @@ def create_quartile_views(sender, **kwargs):
 
         cursor.execute("CREATE MATERIALIZED VIEW population_class_%s_quartiles AS ({0});".format(query), [population_class])
 
-post_migrate.connect(create_quartile_views)
+#post_migrate.connect(create_quartile_views)
 

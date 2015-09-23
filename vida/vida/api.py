@@ -1,6 +1,7 @@
 from tastypie.resources import ModelResource
 from tastypie.authentication import BasicAuthentication
 from .models import Person
+from .models import Shelter
 from tastypie import fields
 from django.contrib.auth import get_user_model
 
@@ -18,6 +19,17 @@ class PersonResource(ModelResource):
     class Meta:
         queryset = Person.objects.all()
         excludes = ['start_date', 'stop_date']
+        authentication = BasicAuthentication()
+
+    def determine_format(self, request):
+        return 'application/json'
+
+
+class ShelterResource(ModelResource):
+    created_by = fields.ToOneField(UserResource, 'created_by',  full=True, blank=True, null=True)
+
+    class Meta:
+        queryset = Shelter.objects.all()
         authentication = BasicAuthentication()
 
     def determine_format(self, request):
