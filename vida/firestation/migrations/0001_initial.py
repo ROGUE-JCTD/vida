@@ -11,7 +11,7 @@ import django.core.validators
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('vida_core', '__first__'),
+        ('vida_core', '0001_initial'),
     ]
 
     operations = [
