@@ -1,5 +1,6 @@
 from tastypie.resources import ModelResource
 from tastypie.authentication import BasicAuthentication
+from tastypie.authorization import Authorization
 from .models import Person
 from .models import Shelter
 from tastypie import fields
@@ -20,6 +21,7 @@ class PersonResource(ModelResource):
         queryset = Person.objects.all()
         excludes = ['start_date', 'stop_date']
         authentication = BasicAuthentication()
+        authorization = Authorization()
 
     def determine_format(self, request):
         return 'application/json'
