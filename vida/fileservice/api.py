@@ -2,30 +2,29 @@ from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie.utils import trailing_slash
 from tastypie.bundle import Bundle
-from django.core.urlresolvers import NoReverseMatch
-from tastypie.exceptions import NotFound
 from tastypie.resources import Resource
 from django.conf.urls import url
 from django.views.static import serve
 from tastypie import fields
 import helpers
 import os
+import hashlib
 
 
 class FileItem(object):
-    id = None
     name = ''
 
 
 class FileItemResource(Resource):
-    id = fields.IntegerField(attribute='id')
     name = fields.CharField(attribute='name')
-    file = fields.FileField(attribute='file', null=True, blank=True)
 
     class Meta:
         resource_name = 'fileitem'
         object_class = FileItem
         fields = ['name']
+        include_resource_uri = False
+        allowed_methods = ['get', 'post', 'put']
+        always_return_data = True
         authentication = BasicAuthentication()
         authorization = Authorization()
 
@@ -36,16 +35,11 @@ class FileItemResource(Resource):
     def get_file_items():
         file_names = helpers.get_file_service_files()
         file_items = []
-        fake_id = 0
         for name in file_names:
             file_item = FileItem()
-            file_item.id = fake_id
-            fake_id += 1
             file_item.name = name
-            file_item.file = helpers.get_filename_absolute(name)
             file_items.append(file_item)
         return file_items
-
 
     @staticmethod
     def get_file_item(kwargs):
@@ -94,10 +88,9 @@ class FileItemResource(Resource):
 
     def obj_get(self, request=None, **kwargs):
         # get one object from data source
-        try:
-            return FileItemResource.get_file_item(kwargs)
-        except KeyError:
-            raise NotFound("Object not found")
+        file_item = FileItemResource.get_file_item(kwargs)
+        # if not file_item: raise NotFound("Object not found")
+        return file_item
 
     def obj_create(self, bundle, request=None, **kwargs):
         # create a new File
@@ -105,8 +98,18 @@ class FileItemResource(Resource):
         # full_hydrate does the heavy lifting mapping the
         # POST-ed payload key/values to object attribute/values
         bundle = self.full_hydrate(bundle)
-        with open(helpers.get_filename_absolute(bundle.data[u'name']), 'w+') as uploaded_file:
-            uploaded_file.write(bundle.data[u'file'])
+        filename_name, file_extension = os.path.splitext(bundle.data[u'file'].name)
+        file_data = bundle.data[u'file'].read()
+        file_sha1 = hashlib.sha1(file_data).hexdigest()
+        if file_extension:
+            filename = '{}{}'.format(file_sha1, file_extension)
+        else:
+            filename = file_sha1
+        bundle.obj.name = filename
+        with open(helpers.get_filename_absolute(filename), 'wb+') as destination_file:
+            destination_file.write(file_data)
+        # remove the file object passed in so that the response is more concise about what this file will be referred to
+        bundle.data.pop(u'file', None)
         return bundle
 
     def prepend_urls(self):
@@ -121,7 +124,6 @@ class FileItemResource(Resource):
     def download(self, request, **kwargs):
         # method check to avoid bad requests
         self.method_check(request, allowed=['get'])
-
         response = None
         file_item = FileItemResource.get_file_item(kwargs)
         if file_item:
