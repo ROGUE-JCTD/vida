@@ -52,6 +52,8 @@ class Person(models.Model):
     notes = models.TextField(blank=True)
 
     barcode = models.IntegerField(null=True, blank=True)
+    pic_path = models.FilePathField(null=True)
+    pic = models.FileField(null=True)
 
     def __unicode__(self):
         return self.given_name

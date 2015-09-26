@@ -10,6 +10,9 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+FILE_SERVICE_CONFIG = {
+    'file_dir': '/webapps/vida/file_service_store'
+}
 
 DATABASES = {
     'default': {
@@ -151,6 +154,7 @@ INSTALLED_APPS = (
     'vida.firestation',
     'vida.vida',
     'vida.usgs',
+    'vida.fileservice',
     'jsonfield',
     'compressor',
     'storages',

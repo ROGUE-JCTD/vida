@@ -5,6 +5,7 @@ from .vida_core.forms import VIDAPasswordResetForm
 from .vida_core.views import ForgotUsername
 from .firestation.api import StaffingResource, FireStationResource, FireDepartmentResource
 from .vida.api import PersonResource
+from fileservice.api import FileItemResource
 from tastypie.api import Api
 from firestation.views import Home
 
@@ -14,6 +15,7 @@ v1_api.register(StaffingResource())
 v1_api.register(FireStationResource())
 v1_api.register(FireDepartmentResource())
 v1_api.register(PersonResource())
+v1_api.register(FileItemResource())
 
 
 urlpatterns = patterns('',
