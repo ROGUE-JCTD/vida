@@ -19,7 +19,7 @@ class FileItemResource(Resource):
     name = fields.CharField(attribute='name')
 
     class Meta:
-        resource_name = 'fileitem'
+        resource_name = 'fileservice'
         object_class = FileItem
         fields = ['name']
         include_resource_uri = False
@@ -33,7 +33,7 @@ class FileItemResource(Resource):
 
     @staticmethod
     def get_file_items():
-        file_names = helpers.get_file_service_files()
+        file_names = helpers.get_fileservice_files()
         file_items = []
         for name in file_names:
             file_item = FileItem()

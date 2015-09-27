@@ -1,5 +1,6 @@
 from django.contrib import admin
-from models import Person
+
+from vida.vida.models import Person
 
 
 class PersonAdmin(admin.ModelAdmin):

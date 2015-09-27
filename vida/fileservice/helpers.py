@@ -15,13 +15,13 @@ class DictToObject(object):
 
 """
 example settings file
-FILE_SERVICE_CONFIG = {
-    'file_dir': '/webapps/vida/file_service_store'
+FILESERVICE_CONFIG = {
+    'store_dir': '/webapps/vida/fileservice_store'
 }
 """
-def get_file_service_dir():
-    conf = getattr(settings, 'FILE_SERVICE_CONFIG', {})
-    return conf.get('file_dir', './')
+def get_fileservice_dir():
+    conf = getattr(settings, 'FILESERVICE_CONFIG', {})
+    return conf.get('store_dir', './fileservice_store')
 
 
 def u_to_str(string):
@@ -41,8 +41,8 @@ def add_file_attribs(target_object, filename):
             target_object['file_updated'] = datetime.fromtimestamp(stat.st_ctime)
 
 
-def get_file_service_files():
-    return os.listdir(get_file_service_dir())
+def get_fileservice_files():
+    return os.listdir(get_fileservice_dir())
 
 
 def file_exists(filename):
@@ -52,4 +52,4 @@ def file_exists(filename):
 
 
 def get_filename_absolute(filename):
-    return '{}/{}'.format(get_file_service_dir(), filename)
+    return '{}/{}'.format(get_fileservice_dir(), filename)

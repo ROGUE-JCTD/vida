@@ -1,10 +1,11 @@
 from tastypie.resources import ModelResource
 from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
-from .models import Person
-from .models import Shelter
 from tastypie import fields
 from django.contrib.auth import get_user_model
+
+from vida.vida.models import Person
+from vida.vida.models import Shelter
 
 
 class UserResource(ModelResource):

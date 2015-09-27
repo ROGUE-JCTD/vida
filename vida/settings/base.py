@@ -10,8 +10,8 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-FILE_SERVICE_CONFIG = {
-    'file_dir': '/webapps/vida/file_service_store'
+FILESERVICE_CONFIG = {
+    'store_dir': '/webapps/vida/fileservice_store'
 }
 
 DATABASES = {

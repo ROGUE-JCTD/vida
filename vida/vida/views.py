@@ -1,5 +1,6 @@
 from django.views import generic
-from .models import Person
+
+from vida.vida.models import Person
 
 
 class IndexView(generic.ListView):

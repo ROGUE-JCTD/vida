@@ -26,7 +26,7 @@ class Person(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # time travel / verioning fields
+    # time travel / versioning fields
     start_date = models.DateTimeField(null=True)
     stop_date = models.DateTimeField(null=True)
 
@@ -52,8 +52,7 @@ class Person(models.Model):
     notes = models.TextField(blank=True)
 
     barcode = models.IntegerField(null=True, blank=True)
-    pic_path = models.FilePathField(null=True)
-    pic = models.FileField(null=True)
+    pic_filename = models.CharField(null=True, blank=True, max_length=50)
 
     def __unicode__(self):
         return self.given_name
