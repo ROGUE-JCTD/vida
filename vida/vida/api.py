@@ -4,6 +4,7 @@ from tastypie.authorization import Authorization
 from tastypie import fields
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+import helpers
 
 from vida.vida.models import Person
 from vida.vida.models import Shelter
@@ -20,18 +21,42 @@ class PersonResource(ModelResource):
     created_by = fields.ToOneField(UserResource, 'created_by',  full=True, blank=True, null=True)
 
     class Meta:
-        def filter_custom_age(url_args):
-            """Build Custom filter to match age between a max and min if it is set"""
+        def filter_custom_query(url_args):
+            """Build Custom filter that searches all relevant fields"""
+            number_val = None
+            string_val = None
             try:
-                age = int(url_args.pop('age_about') [0])
+                string_val = url_args.pop('custom_query')[0]
+
+                if helpers.is_int_str(string_val):
+                    number_val = int(string_val)
             except KeyError:
                 return None
 
-            age_query = (
-                Q(age__gte=age-10) &
-                Q(age__lte=age+10)
+            custom_query = (
+                Q(family_name__icontains=string_val) |
+                Q(given_name__icontains=string_val) |
+                Q(mothers_given_name__icontains=string_val) |
+                Q(fathers_given_name__icontains=string_val) |
+                Q(description__icontains=string_val) |
+                Q(notes__icontains=string_val) |
+                Q(shelter__icontains=string_val)
             )
-            return age_query
+
+            if number_val:
+                custom_query = (
+                    (
+                        Q(age__gte=number_val-10) &
+                        Q(age__lte=number_val+10)
+                    ) |
+                    (
+                        Q(barcode__exact=number_val)
+                    ) |
+                    Q(description__icontains=number_val) |
+                    Q(notes__icontains=string_val) |
+                    Q(shelter__icontains=string_val)
+                )
+            return custom_query
 
         queryset = Person.objects.all()
         excludes = ['start_date', 'stop_date']
@@ -43,10 +68,11 @@ class PersonResource(ModelResource):
             'mothers_given_name': ALL,
             'fathers_given_name': ALL,
             'description': ALL,
+            'notes': ALL,
             'barcode': ALL,
             'age': ALL,
         }
-        custom_filters = {'age_about': filter_custom_age}
+        custom_filters = {'custom_query': filter_custom_query}
 
     def determine_format(self, request):
         return 'application/json'
