@@ -1,0 +1,2 @@
+supervisorctl stop vida
+
