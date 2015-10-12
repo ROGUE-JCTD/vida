@@ -4,17 +4,11 @@ from vida.vida.models import Person
 
 
 class IndexView(generic.ListView):
-    template_name = 'person/index.html'
 
     def get_queryset(self):
-        return Person.objects.order_by('created_at')[:5]
+        return Person.objects.order_by('created_at')
 
 
 class DetailView(generic.DetailView):
     model = Person
-    template_name = 'person/detail.html'
-
-
-class Person(generic.DetailView):
-    model = Person
-    template_name = 'person/results.html'
+    template_name = 'vida/person_detail.html'

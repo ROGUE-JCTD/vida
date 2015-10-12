@@ -1,0 +1,303 @@
+{% load humanize %}
+{% load vida %}
+<!DOCTYPE html>
+<!--[if IE 8 ]>
+<html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if IE 9 ]>
+<html class="no-js ie9" lang="en"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html class="no-js" lang="en"> <!--<![endif]-->
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="description" content="{{ object.description }} Learn more about this community's risks.">
+    <meta name="author" content="Prominent Edge LLC">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <title>Community Assessment: {{ person.given_name }}</title>
+    {% include 'firestation/_favicon.html' %}
+
+
+
+    <script type="text/javascript">
+    var config = {
+      geom: {{ object.geom.json|safe|default:"null" }},
+      centroid: [{{ object.headquarters_address.geom.centroid.y }}, {{ object.headquarters_address.geom.centroid.x }}],
+      id: {{object.id}}
+    }
+    </script>
+
+</head>
+
+<body class="ct-headroom--fixedTopBar cssAnimate" ng-controller="jurisdictionController" ng-app="fireStation">
+
+
+<form class="ct-searchFormMobile ct-u-marginBottom50" role="form">
+    <div class="form-group ">
+        <div class="ct-form--label--type1">
+            <div class="ct-u-displayTableVertical">
+                <div class="ct-u-displayTableCell">
+                    <div class="ct-input-group-btn">
+                        <button class="btn btn-primary">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="ct-u-displayTableCell text-center">
+                    <span>Search for property</span>
+                </div>
+            </div>
+        </div>
+        <div class="ct-u-displayTableVertical ct-u-marginBottom20">
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Property id</label>
+                    <input type="text" required class="form-control input-lg" placeholder="Any">
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Location</label>
+                    <select class="ct-js-select ct-select-lg">
+                        <option value="any">Any</option>
+                        <option value="1">New York</option>
+                        <option value="2">New Jersey</option>
+                        <option value="3">Newark</option>
+                        <option value="4">Philadelphia</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Sub-Location</label>
+                    <select class="ct-js-select ct-select-lg">
+                        <option value="any">Any</option>
+                        <option value="1">New York</option>
+                        <option value="2">Jersey</option>
+                        <option value="3">Newark</option>
+                        <option value="4">Philadelphia</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Property Status</label>
+                    <select class="ct-js-select ct-select-lg">
+                        <option value="any">Any</option>
+                        <option value="1">Sale</option>
+                        <option value="2">New</option>
+                        <option value="3">Loan</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Property type </label>
+                    <select class="ct-js-select ct-select-lg">
+                        <option value="any">Any</option>
+                        <option value="1">Houses</option>
+                        <option value="2">Industrial</option>
+                        <option value="3">Retail</option>
+                        <option value="4">Apartments</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="ct-u-displayTableVertical ct-slider--row">
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Bedrooms</label>
+                    <select class="ct-js-select ct-select-lg">
+                        <option value="any">Any</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3+</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <div class="ct-form--item">
+                    <label>Bathrooms</label>
+                    <select class="ct-js-select ct-select-lg">
+                        <option value="any">Any</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3+</option>
+                    </select>
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell ct-u-marginBottom40">
+                <div class="ct-form--item ct-sliderAmount">
+                    <label>Price ($)</label>
+                    <input type="text" value="1000000" required class="form-control input-lg ct-js-slider-min ct-u-marginBottom20" placeholder="">
+                    <input type="text" class="slider ct-js-sliderAmount" value="" data-slider-tooltip="hide" data-slider-handle="square" data-slider-min="5000" data-slider-max="5000000" data-slider-step="5000" data-slider-value="[1000000,2000000]">
+                    <label class="pull-left">Min</label>
+                    <label class="pull-right">Max</label>
+                    <input type="text" value="2000000" required class="form-control input-lg ct-js-slider-max" placeholder="">
+                </div>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <input type="text" class="slider ct-js-sliderTicks" value="" data-slider-handle="square" data-slider-min="0" data-slider-max="200" data-slider-step="20" data-slider-value="[60,120]"/>
+                <label class="text-center center-block">Area (m2)</label>
+            </div>
+            <div class="ct-u-displayTableCell">
+                <button type="submit" class="btn btn-warning text-capitalize pull-right">search now</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div id="ct-js-wrapper" class="ct-pageWrapper">
+
+<div class="ct-navbarMobile">
+    <button type="button" class="navbar-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="{% url 'firestation_home' %}"><img src="{{STATIC_URL}}firestation/theme/assets/images/content/logo.png" alt="Estato"> </a>
+    <button type="button" class="searchForm-toggle">
+        <span class="sr-only">Toggle navigation</span>
+        <span><i class="fa fa-search"></i></span>
+    </button>
+</div>
+
+{% include "firestation/_navbar.html" %}
+
+<div class="ct-site--map">
+    <div class="container">
+        <a href="{% url 'persons_list' %}">Home</a>
+        <a href="{% url 'persons_list' %}">People</a>
+        <a href="{% url 'persons_detail' person.id %}">{{ person.given_name }}</a>
+    </div>
+</div>
+<header class="ct-mediaSection">
+    <div class="ct-mediaSection-inner">
+        <div class="container">
+            <div class="ct-u-displayTableVertical">
+                <div class="ct-textBox ct-u-text--white ct-u-displayTableCell text-left">
+                    <h2>{{ person.given_name|default:"Unknown" }}</h2>
+                    <h4>{{ object.headquarters_address.get_row_display|default:"Unknown" }}</h4>
+                    <span class="ct-productID ct-fw-300">
+                        ID: <span>{{ person.id|default:"Unknown" }}</span>
+                    </span>
+                </div>
+                <div class="ct-u-displayTableCell text-right">
+                    <a href="search-grid.html" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="icon-star fa-2x"></i></a>
+                    <a href="javascript:window.print()" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="icon-printer fa-2x"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<section class="ct-u-paddingBottom60">
+    <div class="container">
+        <div class="ct-productMeta--single ">
+            <div class="row">
+                <div class="col-md-8 col-lg-9">
+                    <div class="ct-u-displayTableVertical">
+                        <div class="ct-u-displayTableCell text-left">
+                            <i class="fa fa-clock-o"></i><h6>Last Updated: {{ person.modified|default:"Unknown" }}</h6>
+                        </div>
+                    </div>
+                </div>
+ <!--                <div class="col-md-4 col-lg-3 text-right">
+                    <a href=""><i class="fa fa-times"></i>report abuse</a>
+                </div> -->
+            </div>
+        </div>
+        <div class="ct-section--products">
+            <div class="row">
+                <div class="col-md-8 col-lg-9">
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="ct-heading ct-u-marginBottom20">
+                                <h3>Summary</h3>
+                            </div>
+                            <div class="ct-u-displayTableVertical ct-productDetails">
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600">Name</span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                        <span>{{ person.given_name|default:"Unknown" }}</span>
+                                    </div>
+                                </div>
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600">Address</span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                        <span>{{ person.address|default:"Unknown" }}</span>
+                                    </div>
+                                </div>
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600">ID</span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                        <span>{{ person.id|default:"Unknown" }}</span>
+                                    </div>
+                                </div>
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600">Phone Number</span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                        <span>{{ person.phone_number|default:"Unknown" }}</span>
+                                    </div>
+                                </div>
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600">Fax</span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                        <span>{{ person.headquarters_fax|default:"Unknown" }}</span>
+                                    </div>
+                                </div>
+                                {% if object.website %}
+                                <div class="ct-u-displayTableRow">
+                                    <div class="ct-u-displayTableCell">
+                                        <span class="ct-fw-600"><a href="{{ object.website }}">Official Website <i class="fa fa-external-link ct-fw-600"></i></a></span>
+                                    </div>
+                                    <div class="ct-u-displayTableCell text-right">
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                      <div>
+                        <img src="http://192.168.1.55/api/v1/fileservice/{{ person.pic_filename }}/download" width="250" height="250">
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ct-u-paddingBoth60 ct-js-section" data-bg-color="#f3f3f3">
+    <div class="container">
+        <div class="ct-heading ct-u-marginBottom30">
+            <h3>Similar People</h3>
+            <a href="search-list.html" class="pull-right"><i class="fa fa-angle-right"></i>View More</a>
+        </div>
+        <div class="ct-js-owl ct-owl-controls--type2" data-single="false" data-items="4" data-pagination="false">
+            {% for department in object.similar_departments|slice:":15" %}
+            <div class="item">
+                {% include 'firestation/_fire_department_card.html' %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% include 'firestation/_footer.html' %}
+</div>
+
+{% include "firestation/_vida_static.html" %}
+{% include 'google_analytics.html' %}
+
+</body>
+</html>
