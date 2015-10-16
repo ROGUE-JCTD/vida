@@ -22,7 +22,7 @@
     <script type="text/javascript">
     var config = {
       geom: {{ object.geom.json|safe|default:"null" }},
-      centroid: [{{ object.headquarters_address.geom.centroid.y }}, {{ object.headquarters_address.geom.centroid.x }}],
+      centroid: [0, 0],
       id: {{object.id}}
     }
     </script>
@@ -168,7 +168,7 @@
 
 <div class="ct-site--map">
     <div class="container">
-        <a href="{% url 'persons_list' %}">Home</a>
+        <a href="{% url 'firestation_home' %}">Home</a>
         <a href="{% url 'persons_list' %}">People</a>
         <a href="{% url 'persons_detail' person.id %}">{{ person.given_name }}</a>
     </div>
@@ -179,7 +179,7 @@
             <div class="ct-u-displayTableVertical">
                 <div class="ct-textBox ct-u-text--white ct-u-displayTableCell text-left">
                     <h2>{{ person.given_name|default:"Unknown" }}</h2>
-                    <h4>{{ object.headquarters_address.get_row_display|default:"Unknown" }}</h4>
+                    <h4>{{ person.shelter|default:"ShelterUnknown" }}</h4>
                     <span class="ct-productID ct-fw-300">
                         ID: <span>{{ person.id|default:"Unknown" }}</span>
                     </span>
@@ -208,70 +208,137 @@
                 </div> -->
             </div>
         </div>
-        <div class="col-md-2 col-lg-4 -align-center">
-          <img src="/api/v1/fileservice/{{ person.pic_filename }}/download/" width="250" height="250">
-        </div>
         <div class="ct-section--products">
             <div class="row">
-                <div class="col-md-6 col-lg-8">
-
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="ct-heading ct-u-marginBottom20">
-                                <h3>Summary</h3>
+                <div class="col-sm-12">
+                    <div class="ct-heading ct-u-marginBottom20 text-center">
+                        <h3>Person Details</h3>
+                    </div>
+                    <div class="text-center ct-u-marginBottom20">
+                        <img src="/api/v1/fileservice/{{ person.pic_filename }}/download/" width="100%" height="100%">
+                    </div>
+                    <div class="ct-u-displayTableVertical ct-productDetails">
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Name</span>
                             </div>
-                            <div class="ct-u-displayTableVertical ct-productDetails">
-                                <div class="ct-u-displayTableRow">
-                                    <div class="ct-u-displayTableCell">
-                                        <span class="ct-fw-600">Name</span>
-                                    </div>
-                                    <div class="ct-u-displayTableCell text-right">
-                                        <span>{{ person.given_name|default:"Unknown" }}</span>
-                                    </div>
-                                </div>
-                                <div class="ct-u-displayTableRow">
-                                    <div class="ct-u-displayTableCell">
-                                        <span class="ct-fw-600">Address</span>
-                                    </div>
-                                    <div class="ct-u-displayTableCell text-right">
-                                        <span>{{ person.address|default:"Unknown" }}</span>
-                                    </div>
-                                </div>
-                                <div class="ct-u-displayTableRow">
-                                    <div class="ct-u-displayTableCell">
-                                        <span class="ct-fw-600">ID</span>
-                                    </div>
-                                    <div class="ct-u-displayTableCell text-right">
-                                        <span>{{ person.id|default:"Unknown" }}</span>
-                                    </div>
-                                </div>
-                                <div class="ct-u-displayTableRow">
-                                    <div class="ct-u-displayTableCell">
-                                        <span class="ct-fw-600">Phone Number</span>
-                                    </div>
-                                    <div class="ct-u-displayTableCell text-right">
-                                        <span>{{ person.phone_number|default:"Unknown" }}</span>
-                                    </div>
-                                </div>
-                                <div class="ct-u-displayTableRow">
-                                    <div class="ct-u-displayTableCell">
-                                        <span class="ct-fw-600">Fax</span>
-                                    </div>
-                                    <div class="ct-u-displayTableCell text-right">
-                                        <span>{{ person.headquarters_fax|default:"Unknown" }}</span>
-                                    </div>
-                                </div>
-                                {% if object.website %}
-                                <div class="ct-u-displayTableRow">
-                                    <div class="ct-u-displayTableCell">
-                                        <span class="ct-fw-600"><a href="{{ object.website }}">Official Website <i class="fa fa-external-link ct-fw-600"></i></a></span>
-                                    </div>
-                                    <div class="ct-u-displayTableCell text-right">
-                                    </div>
-                                </div>
-                                {% endif %}
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.given_name|default:"Unknown" }}</span>
                             </div>
                         </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Address</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.address|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Age</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.age|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Phone Number</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.phone_number|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Barcode</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.barcode|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Created At</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.created_at|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Created By</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.created_by|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Family Name</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.family_name|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Fathers' Given Name</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.fathers_given_name|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Mothers' Given Name</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.mothers_given_name|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">City</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.city|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Neighborhood</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.neighborhood|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Province/State</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.province_or_state|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Street Number</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ person.street_and_number|default:"Unknown" }}</span>
+                            </div>
+                        </div>
+                        {% if object.website %}
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600"><a href="{{ object.website }}">Official Website <i class="fa fa-external-link ct-fw-600"></i></a></span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

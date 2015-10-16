@@ -407,12 +407,12 @@ class Home(LoginRequiredMixin, TemplateView, FeaturedDepartmentsMixin):
         if not priority_department_geojson:
             priority_departments = []
 
-            for fd in FireDepartment.priority_departments.all():
-                priority_departments.append(dict(type='Feature', geometry=json.loads(fd.headquarters_geom.centroid.json),
-                                                 properties=dict(dist_model_score=fd.dist_model_score,
-                                                                 predicted_fires=fd.predicted_fires_sum,
-                                                                 name=fd.name, url=fd.get_absolute_url()
-                                                                 )))
+            #for fd in FireDepartment.priority_departments.all():
+                #priority_departments.append(dict(type='Feature', geometry=json.loads(fd.headquarters_geom.centroid.json),
+                #                                 properties=dict(dist_model_score=fd.dist_model_score,
+                #                                                 predicted_fires=fd.predicted_fires_sum,
+                #                                                 name=fd.name, url=fd.get_absolute_url()
+                #                                                 )))
 
             context['featured_departments'] = json.dumps(dict(type='FeatureCollection', features=priority_departments))
             cache.set('priority_deparments_geojson', context['featured_departments'], 60 * 60 * 24)

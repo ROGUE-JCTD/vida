@@ -179,10 +179,10 @@
             <div class="container">
                 <img src="{{STATIC_URL}}vida-header-logo.png" alt="">
                 <h4 class="ct-u-marginBottom50" style="color:#f29a00">Virtual Identity for Disaster Assistance</h4>
-                <!--<a class="btn btn-default btn-transparent--border ct-u-text--white ct-js-btnScroll" href="{% url 'firedepartment_list' %}">Browse Departments</a>-->
+                <!--<a class="btn btn-default btn-transparent--border ct-u-text--white ct-js-btnScroll" href="{% url 'persons_list' %}">Browse Departments</a>-->
                 <div class="container vida-searchbox">
                     <div>
-                        <form class="form-inline col-lg-12 ct-u-paddingBottom30" method="get" action="{% url 'firedepartment_list' %}/">
+                        <form class="form-inline col-lg-12 ct-u-paddingBottom30" method="get" action="{% url 'persons_list' %}">
                           <div class="form-group col-lg-12">
                             <label class="sr-only" for="exampleInputAmount">Amount (in dollars)</label>
                             <div class="input-group col-lg-5">
@@ -202,12 +202,12 @@
     <div class="container ct-u-paddingBoth20">
         <span>
             <a href="#about" class="text-uppercase">about vida</a>
-            <a href="{% url 'firedepartment_list' %}" class="text-uppercase">browse</a>
+            <a href="{% url 'persons_list' %}" class="text-uppercase">browse</a>
             <a href="#partners" class="text-uppercase">partners</a>
         </span>
         <span class="pull-right">
             <a href="{% url 'registration_register' %}" class="text-uppercase">sign up</a>
-            <a href="{% url 'login' %}?next={% url 'firedepartment_list' %}" class="text-uppercase">login</a>
+            <a href="{% url 'login' %}?next={% url 'persons_list' %}" class="text-uppercase">login</a>
         </span>
     </div>
 </section>
