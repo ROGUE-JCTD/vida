@@ -62,7 +62,7 @@ class IndexView(generic.ListView):
         if self.request.GET.get('q'):
             query_str = self.request.GET.get('q')
             custom_query = filter_custom_query(query_str)
-            return queryset.filter(custom_query)
+            queryset = queryset.filter(custom_query)
 
         return queryset
 
