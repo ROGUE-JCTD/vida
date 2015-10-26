@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 from .vida_core.forms import VIDAPasswordResetForm
 from .vida_core.views import ForgotUsername
 from .firestation.api import StaffingResource, FireStationResource, FireDepartmentResource
-from .vida.api import PersonResource
+from .vida.api import PersonResource, ShelterResource
 from .vida.views import IndexView, DetailView
 from fileservice.api import FileItemResource
 from tastypie.api import Api
@@ -16,6 +16,7 @@ v1_api.register(StaffingResource())
 v1_api.register(FireStationResource())
 v1_api.register(FireDepartmentResource())
 v1_api.register(PersonResource())
+v1_api.register(ShelterResource())
 v1_api.register(FileItemResource())
 
 
