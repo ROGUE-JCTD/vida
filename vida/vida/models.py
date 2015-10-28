@@ -1,5 +1,6 @@
-from django.db import models
 from django.conf import settings
+from django.contrib.gis.db import models
+from django.contrib.gis.geos import Point
 import helpers
 
 
@@ -78,6 +79,8 @@ class Shelter(models.Model):
     province_or_state = models.CharField(blank=True, max_length=50)
 
     notes = models.TextField(blank=True)
+    geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
+
 
     def __unicode__(self):
         return self.name
