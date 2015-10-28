@@ -51,7 +51,7 @@ class Person(models.Model):
 
     notes = models.TextField(blank=True)
 
-    barcode = models.IntegerField(null=True, blank=True)
+    barcode = models.CharField(null=True, blank=True, max_length=100)
     pic_filename = models.CharField(null=True, blank=True, max_length=50)
 
     def __unicode__(self):

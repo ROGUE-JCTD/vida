@@ -50,7 +50,7 @@ class IndexView(generic.ListView):
                         Q(age__lte=number_val+10)
                     ) |
                     (
-                        Q(barcode__exact=number_val)
+                        Q(barcode__exact=string_val)
                     ) |
                     Q(description__icontains=number_val) |
                     Q(notes__icontains=string_val) |

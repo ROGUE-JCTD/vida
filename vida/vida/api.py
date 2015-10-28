@@ -40,7 +40,8 @@ class PersonResource(ModelResource):
                 Q(fathers_given_name__icontains=string_val) |
                 Q(description__icontains=string_val) |
                 Q(notes__icontains=string_val) |
-                Q(shelter__icontains=string_val)
+                Q(shelter__icontains=string_val) |
+                Q(barcode__exact=string_val)
             )
 
             if number_val:
@@ -49,12 +50,11 @@ class PersonResource(ModelResource):
                         Q(age__gte=number_val-10) &
                         Q(age__lte=number_val+10)
                     ) |
-                    (
-                        Q(barcode__exact=number_val)
-                    ) |
                     Q(description__icontains=number_val) |
                     Q(notes__icontains=string_val) |
-                    Q(shelter__icontains=string_val)
+                    Q(shelter__icontains=string_val) |
+                    Q(barcode__exact=string_val) |
+                    Q(id__exact=number_val)
                 )
             return custom_query
 
