@@ -34,7 +34,7 @@ class Person(models.Model):
     # basic
     family_name = models.CharField(blank=True, max_length=50)
     given_name = models.CharField(blank=False, max_length=50)
-    gender = models.CharField(blank=True, max_length=10)
+    gender = models.CharField(blank=True, max_length=20)
     age = models.CharField(blank=True, max_length=10)
     mothers_given_name = models.CharField(blank=True, max_length=50)
     fathers_given_name = models.CharField(blank=True, max_length=50)

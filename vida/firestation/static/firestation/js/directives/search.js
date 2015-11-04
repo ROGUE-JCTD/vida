@@ -9,39 +9,24 @@
                 restrict: 'C',
                 link: function (scope, element, attrs) {
                     scope.params = {};
-                    scope.sortFields = [];
+                    scope.sortFields = ['age'];
                     scope.limits = [15, 30, 60, 90];
-                    
-                    attrs.$observe('fdid', function() {
-                      scope.params.fdid = attrs.fdid;
+
+                    attrs.$observe('given_name', function() {
+                      scope.params.given_name = attrs.given_name;
                     });
 
-                    attrs.$observe('state', function() {
-                      scope.params.state = attrs.state;
-                    });
-
-                    attrs.$observe('name', function() {
-                      scope.params.name = attrs.name;
-                    });
-
-                    attrs.$observe('region', function() {
-                      scope.params.region = attrs.region;
-                    });
-
-
-                    attrs.$observe('population', function() {
-                      scope.params.population = attrs.population;
+                    attrs.$observe('barcode', function() {
+                        scope.params.barcode = attrs.barcode;
                     });
 
                     attrs.$observe('q', function() {
                       scope.params.q = attrs.q;
                     });
 
-
-                   attrs.$observe('distModelScore', function() {
-                      scope.params.dist_model_score = attrs['distModelScore']; 
-                   });
-
+                    attrs.$observe('age', function() {
+                      scope.params.age = attrs.age;
+                    });
 
                     attrs.$observe('sortBy', function() {
                       scope.params.sortBy = attrs['sortBy'];
