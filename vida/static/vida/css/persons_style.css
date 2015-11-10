@@ -1,0 +1,6 @@
+.personImgContainer {
+    object-fit: cover
+    overflow: hidden
+    width: 200px
+    height: 100px
+}
