@@ -53,7 +53,8 @@ class IndexView(generic.ListView):
                 Q(fathers_given_name__icontains=string_val) |
                 Q(description__icontains=string_val) |
                 Q(notes__icontains=string_val) |
-                Q(shelter__icontains=string_val)
+                Q(shelter__icontains=string_val) |
+                Q(barcode__exact=string_val)
             )
 
             if number_val:
