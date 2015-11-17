@@ -8,6 +8,7 @@
       'fireStation.departmentDetailController',
       'fireStation.performanceScoreController',
       'fireStation.mapService',
+      'fireStation.shelterService',
       'fireStation.gauge',
       'fireStation.search',
       'fireStation.graphs'
