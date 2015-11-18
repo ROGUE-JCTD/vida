@@ -1,10 +1,13 @@
+from django.conf.urls import url
 from tastypie.resources import ModelResource, ALL
+from tastypie.utils import trailing_slash
 from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie import fields
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 import helpers
+import os
 
 from vida.vida.models import Person
 from vida.vida.models import Shelter
@@ -76,6 +79,34 @@ class PersonResource(ModelResource):
 
     def determine_format(self, request):
         return 'application/json'
+
+    def prepend_urls(self):
+        """ Add the following array of urls to the Tileset base urls """
+        return [
+            url(r"^(?P<resource_name>%s)/auto_populate%s$" %
+                (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('auto_populate'), name="api_auto_populate"),
+        ]
+
+    def auto_populate(self, request, **kwargs):
+        # method check to avoid bad requests
+        self.method_check(request, allowed=['get'])
+
+        files = os.listdir('/vida/samples/photos/')
+
+        res = {'Breakpoint': ''}
+
+        ctr = 0
+        length = files.__len__()
+        for file in files:
+            res['Breakpoint'] += file
+            ctr += 1
+            if (ctr != length):
+                res['Breakpoint'] += ' || '
+
+        response = self.create_response(request, res)
+        return response
+
 
     def build_filters(self, filters=None):
         """Allow for building of custom filters based on url keyword."""
