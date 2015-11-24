@@ -53,7 +53,7 @@ class PersonIndexView(generic.ListView):
                 Q(fathers_given_name__icontains=string_val) |
                 Q(description__icontains=string_val) |
                 Q(notes__icontains=string_val) |
-                Q(shelter__icontains=string_val) |
+                Q(shelter_id__exact=string_val) |
                 Q(barcode__exact=string_val)
             )
 
@@ -68,7 +68,7 @@ class PersonIndexView(generic.ListView):
                     ) |
                     Q(description__icontains=number_val) |
                     Q(notes__icontains=string_val) |
-                    Q(shelter__icontains=string_val)
+                    Q(shelter_id__exact=string_val)
                 )
 
             return custom_query
