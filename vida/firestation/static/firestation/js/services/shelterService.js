@@ -14,7 +14,6 @@
               transformResponse: $http.defaults.transformResponse.concat([
                 function (data, headersGetter) {
                   shelters = data.objects;
-                  console.log('----[ transformResponse data: ', data);
                   success();
                 }
               ])

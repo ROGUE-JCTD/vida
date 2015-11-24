@@ -30,7 +30,7 @@
 
 </head>
 
-<body class="ct-headroom--fixedTopBar cssAnimate" ng-controller="jurisdictionController" ng-app="fireStation">
+<body class="ct-headroom--fixedTopBar cssAnimate" ng-controller="personController" ng-app="fireStation">
 
 
 <form class="ct-searchFormMobile ct-u-marginBottom50" role="form">
@@ -337,9 +337,8 @@
                                 <span class="ct-fw-600">Current Shelter</span>
                             </div>
                             <div class="ct-u-displayTableCell text-right">
-                              <select ng-model="currentShelter" ng-change="getShelters()">
-                                <option value="">Option 1</option>
-                                <option value="">Option 2</option>
+                              <select ng-model="currentShelter" ng-init="currentShelter = getCurrentShelter()" ng-change="changeShelter()"
+                                  ng-options="shelter as shelter for shelter in shelterList">
                               </select>
                             </div>
                         </div>

@@ -63,19 +63,38 @@
               departmentMap.toggleFullscreen();
           };
 
-          $scope.getAllSheltersQuery = function() {
-            print("Query shelters");
-            shelterServ.getAllShelters();
-          };
+      })
 
-          $scope.getShelters = function() {
-            print("Retrieving Shelters");
-            return shelterServ.getAllShelters();
-          };
+      .controller('personController', function($scope, $rootScope, $http, shelterServ) {
+        $scope.shelterList = [];
+        $scope.current_shelter = {};
 
-          $scope.changeShelter = function() {
-            print("Help me");
-          };
+        $scope.getAllShelters = function() {
+          shelterServ.getAllShelters(function() {
+            var shelters = shelterServ.getShelters();
+            for (var i = 0; i < shelters.length; i++){
+              $scope.shelterList.push(shelters[i].name);
+            }
 
+            // Assign current drop down to selection
+
+          });
+        };
+
+        $scope.reloadShelters = function() {
+          $scope.shelterList = [];
+
+          $scope.getAllShelters();
+        };
+
+        $scope.getCurrentShelter = function() {
+          return {'name': 'This is defaulted'};
+        };
+
+        $scope.changeShelter = function() {
+          $scope.current_shelter = this.current_shelter;
+        };
+
+        $scope.getAllShelters();
       })
 })();
