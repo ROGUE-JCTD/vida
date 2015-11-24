@@ -3,7 +3,7 @@
 (function() {
     angular.module('fireStation.departmentDetailController', [])
 
-    .controller('jurisdictionController', function($scope, $http, FireStation, map) {
+    .controller('jurisdictionController', function($scope, $http, FireStation, map, shelterServ) {
           var departmentMap = map.initMap('map', {scrollWheelZoom: false});
           var showStations = true;
           var stationIcon = L.VIDAMarkers.firestationmarker();
@@ -61,6 +61,20 @@
 
           $scope.toggleFullScreenMap = function() {
               departmentMap.toggleFullscreen();
+          };
+
+          $scope.getAllSheltersQuery = function() {
+            print("Query shelters");
+            shelterServ.getAllShelters();
+          };
+
+          $scope.getShelters = function() {
+            print("Retrieving Shelters");
+            return shelterServ.getAllShelters();
+          };
+
+          $scope.changeShelter = function() {
+            print("Help me");
           };
 
       })

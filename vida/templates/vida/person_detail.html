@@ -6,6 +6,7 @@
 <!--[if IE 9 ]>
 <html class="no-js ie9" lang="en"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!-->
+
 <html class="no-js" lang="en"> <!--<![endif]-->
 <head lang="en">
     <meta charset="UTF-8">
@@ -329,6 +330,17 @@
                             </div>
                             <div class="ct-u-displayTableCell text-right">
                                 <span>{{ person.province_or_state|default:"" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Current Shelter</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                              <select ng-model="currentShelter" ng-change="getShelters()">
+                                <option value="">Option 1</option>
+                                <option value="">Option 2</option>
+                              </select>
                             </div>
                         </div>
                         {% if object.website %}

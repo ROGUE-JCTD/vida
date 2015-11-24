@@ -166,6 +166,7 @@
 
 {% include "firestation/_navbar.html" %}
 
+{
 <div class="ct-site--map">
     <div class="container">
         <a href="{% url 'firestation_home' %}">Home</a>
@@ -293,21 +294,23 @@
         </div>
     </div>
 </section>
-<section class="ct-u-paddingBoth60 ct-js-section" data-bg-color="#f3f3f3">
-    <div class="container">
-        <div class="ct-heading ct-u-marginBottom30">
-            <h3>People Associated With This Shelter</h3>
-            <a href="search-list.html" class="pull-right"><i class="fa fa-angle-right"></i>View More</a>
-        </div>
-        <div class="ct-js-owl ct-owl-controls--type2" data-single="false" data-items="4" data-pagination="false">
-            {% for person in object.similar_departments|slice:":15" %}
-            <div class="item">
-                {% include 'firestation/_fire_department_card.html' %}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
+{% if person_list %}
+  <section class="ct-u-paddingBoth60 ct-js-section" data-bg-color="#f3f3f3">
+      <div class="container">
+          <div class="ct-heading ct-u-marginBottom30">
+              <h3>People Associated With This Shelter</h3>
+              <a href="search-list.html" class="pull-right"><i class="fa fa-angle-right"></i>View More</a>
+          </div>
+          <div class="ct-js-owl ct-owl-controls--type2" data-single="false" data-items="4" data-pagination="false">
+              {% for person in person_list|slice:":15" %}
+              <div class="item">
+                  {% include 'vida_person_card.html' %}
+              </div>
+              {% endfor %}
+          </div>
+      </div>
+  </section>
+{% endif %}
 {% include 'firestation/_footer.html' %}
 </div>
 
