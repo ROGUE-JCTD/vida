@@ -14,7 +14,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <title>Community Assessment: {{ person.given_name }}</title>
+    <title>Community Assessment: {{ shelter.name }}</title>
     {% include 'firestation/_favicon.html' %}
 
 
@@ -169,8 +169,7 @@
 <div class="ct-site--map">
     <div class="container">
         <a href="{% url 'firestation_home' %}">Home</a>
-        <a href="{% url 'persons_list' %}">People</a>
-        <a href="{% url 'persons_detail' person.id %}">{{ person.given_name }}</a>
+        <a href="{% url 'shelter_detail' shelter.id %}">{{ shelter.name }}</a>
     </div>
 </div>
 <header class="ct-mediaSection">
@@ -178,10 +177,9 @@
         <div class="container">
             <div class="ct-u-displayTableVertical">
                 <div class="ct-textBox ct-u-text--white ct-u-displayTableCell text-left">
-                    <h2>{{ person.given_name|default:"" }}</h2>
-                    <h4>{{ person.shelter|default:"" }}</h4>
+                    <h2>{{ shelter.name|default:"" }}</h2>
                     <span class="ct-productID ct-fw-300">
-                        ID: <span>{{ person.id|default:"" }}</span>
+                        ID: <span>{{ shelter.id|default:"" }}</span>
                     </span>
                 </div>
                 <div class="ct-u-displayTableCell text-right">
@@ -199,7 +197,7 @@
                 <div class="col-md-8 col-lg-9">
                     <div class="ct-u-displayTableVertical">
                         <div class="ct-u-displayTableCell text-left">
-                            <i class="fa fa-clock-o"></i><h6>Last Updated: {{ person.modified|default:"" }}</h6>
+                            <i class="fa fa-clock-o"></i><h6>Last Updated: {{ shelter.modified|default:"" }}</h6>
                         </div>
                     </div>
                 </div>
@@ -208,16 +206,19 @@
                 </div> -->
             </div>
         </div>
-        <div class="ct-section--products">
+
+      <section id="featured" class="section ct-u-paddingBottom50" style="min-height: 400px">
+        <div id="map" class="col-lg-12"></div>
+      </section>
+
+        <div class="ct-section--products ct-u-paddingTop30">
             <div class="row">
                 <div class="col-sm-12">
                     <div class="ct-heading ct-u-marginBottom20 text-center">
-                        <h3>Person Details</h3>
+                        <h3>Shelter Details</h3>
                     </div>
                     <div class="text-center ct-u-marginBottom20">
-                        <img src="/api/v1/fileservice/{{ person.pic_filename }}/download/" width="50%" height="50%"
-                            onerror="if (this.src != 'http://dismagazine.com/uploads/2011/08/notw_silhouette-1.jpg')
-                            this.src = 'http://dismagazine.com/uploads/2011/08/notw_silhouette-1.jpg';">
+
                     </div>
                     <div class="ct-u-displayTableVertical ct-productDetails">
                       <div class="ct-u-displayTableRow">
@@ -225,95 +226,23 @@
                               <span class="ct-fw-600">Name</span>
                           </div>
                           <div class="ct-u-displayTableCell text-right">
-                              <span>{{ person.given_name|default:"" }}</span>
+                              <span>{{ shelter.name|default:"" }}</span>
                           </div>
                       </div>
                       <div class="ct-u-displayTableRow">
                           <div class="ct-u-displayTableCell">
-                              <span class="ct-fw-600">Gender</span>
+                              <span class="ct-fw-600">Description</span>
                           </div>
                           <div class="ct-u-displayTableCell text-right">
-                              <span>{{ person.gender|default:"" }}</span>
+                              <span>{{ shelter.description|default:"" }}</span>
                           </div>
                       </div>
                       <div class="ct-u-displayTableRow">
                             <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Family Name</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.family_name|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Fathers' Given Name</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.fathers_given_name|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Mothers' Given Name</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.mothers_given_name|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
                                 <span class="ct-fw-600">Address</span>
                             </div>
                             <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.street_and_number|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Age</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.age|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Phone Number</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.phone_number|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Barcode</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.barcode|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Created At</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.created_at|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Created By</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.created_by|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">City</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.city|default:"" }}</span>
+                                <span>{{ shelter.street_and_number|default:"" }}</span>
                             </div>
                         </div>
                         <div class="ct-u-displayTableRow">
@@ -321,7 +250,15 @@
                                 <span class="ct-fw-600">Neighborhood</span>
                             </div>
                             <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.neighborhood|default:"" }}</span>
+                                <span>{{ shelter.neighborhood|default:"" }}</span>
+                            </div>
+                        </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">City</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ shelter.city|default:"" }}</span>
                             </div>
                         </div>
                         <div class="ct-u-displayTableRow">
@@ -329,9 +266,18 @@
                                 <span class="ct-fw-600">Province/State</span>
                             </div>
                             <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.province_or_state|default:"" }}</span>
+                                <span>{{ shelter.province_or_state|default:"" }}</span>
                             </div>
                         </div>
+                        <div class="ct-u-displayTableRow">
+                            <div class="ct-u-displayTableCell">
+                                <span class="ct-fw-600">Notes</span>
+                            </div>
+                            <div class="ct-u-displayTableCell text-right">
+                                <span>{{ shelter.notes|default:"" }}</span>
+                            </div>
+                        </div>
+
                         {% if object.website %}
                         <div class="ct-u-displayTableRow">
                             <div class="ct-u-displayTableCell">
@@ -347,21 +293,21 @@
         </div>
     </div>
 </section>
-{% comment %}<section class="ct-u-paddingBoth60 ct-js-section" data-bg-color="#f3f3f3">
+<section class="ct-u-paddingBoth60 ct-js-section" data-bg-color="#f3f3f3">
     <div class="container">
         <div class="ct-heading ct-u-marginBottom30">
-            <h3>Similar People</h3>
+            <h3>People Associated With This Shelter</h3>
             <a href="search-list.html" class="pull-right"><i class="fa fa-angle-right"></i>View More</a>
         </div>
         <div class="ct-js-owl ct-owl-controls--type2" data-single="false" data-items="4" data-pagination="false">
-            {% for department in object.similar_departments|slice:":15" %}
+            {% for person in object.similar_departments|slice:":15" %}
             <div class="item">
                 {% include 'firestation/_fire_department_card.html' %}
             </div>
             {% endfor %}
         </div>
     </div>
-</section>{% endcomment %}
+</section>
 {% include 'firestation/_footer.html' %}
 </div>
 

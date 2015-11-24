@@ -5,7 +5,7 @@ from .vida_core.forms import VIDAPasswordResetForm
 from .vida_core.views import ForgotUsername
 from .firestation.api import StaffingResource, FireStationResource, FireDepartmentResource
 from .vida.api import PersonResource, ShelterResource
-from .vida.views import IndexView, DetailView
+from .vida.views import PersonIndexView, PersonDetailView, ShelterDetailView
 from fileservice.api import FileItemResource
 from tastypie.api import Api
 from firestation.views import Home
@@ -48,6 +48,7 @@ urlpatterns = patterns('',
     url(r'^logout/$', 'django.contrib.auth.views.logout_then_login', name='logout'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^autocomplete/', include('autocomplete_light.urls')),
-    url(r'^persons/$', IndexView.as_view(), name='persons_list'),
-    url(r'^persons/(?P<pk>[0-9]+)/$', DetailView.as_view(), name='persons_detail'),
+    url(r'^persons/$', PersonIndexView.as_view(), name='persons_list'),
+    url(r'^persons/(?P<pk>[0-9]+)/$', PersonDetailView.as_view(), name='persons_detail'),
+    url(r'^shelters/(?P<pk>[0-9]+)/$', ShelterDetailView.as_view(), name='shelter_detail'),
 )

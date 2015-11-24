@@ -48,7 +48,7 @@ class Person(models.Model):
     province_or_state = models.CharField(blank=True, max_length=50)
 
     # if shelters are versioned time-travel extension like, then we have to store a key as opposed to id of row
-    shelter = models.CharField(blank=True, max_length=50)
+    shelter_id = models.CharField(blank=True, max_length=100)
 
     notes = models.TextField(blank=True)
 
@@ -80,7 +80,7 @@ class Shelter(models.Model):
 
     notes = models.TextField(blank=True)
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
-
+    uuid = models.CharField(blank=False, max_length=100)
 
     def __unicode__(self):
         return self.name

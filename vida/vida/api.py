@@ -8,9 +8,10 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 import helpers
 import os
-
+import requests, json
 from vida.vida.models import Person
 from vida.vida.models import Shelter
+
 
 
 class UserResource(ModelResource):
@@ -94,15 +95,68 @@ class PersonResource(ModelResource):
 
         files = os.listdir('/vida/samples/photos/')
 
-        res = {'Breakpoint': ''}
+        res = {'Status | pictures uploaded': ''}
 
         ctr = 0
         length = files.__len__()
-        for file in files:
-            res['Breakpoint'] += file
-            ctr += 1
-            if (ctr != length):
-                res['Breakpoint'] += ' || '
+        with open('/vida/samples/MOCK_DATA.json') as personDB:
+            _personDB = json.load(personDB)
+            db_size = len(_personDB) - 1 # indexing
+            person_index = 0
+            for file in files:
+                with open('/vida/samples/photos/' + file, 'rb') as f:
+                    # fix hardcoded IP
+                    response = requests.post('http://192.168.1.55/api/v1/fileservice/', files={'file': f}, auth=('admin', 'admin'))
+                    if (response.status_code == 201):
+                        # Picture successfully uploaded
+                        pictureFilename = json.loads(response._content)['name']
+                        # Separate gender
+                        isFemale = False
+                        if 'female' in file:
+                            isFemale = True
+                        while True:
+                            if person_index > db_size: # just in case
+                                person_index = 0
+
+                            # *Try* and match up a gender specific picture to the correct gender
+                            thisGender = _personDB[person_index]['gender']
+                            if isFemale:
+                                if thisGender == 'Male':
+                                    person_index += 1
+                                elif thisGender == 'Female':
+                                    break
+                                else:
+                                    break
+                            else:
+                                if thisGender == 'Female':
+                                    person_index += 1
+                                elif thisGender == 'Male':
+                                    break
+                                else:
+                                    break
+
+                        # Get person information
+                        uploadJSON = '{"given_name":"' + _personDB[person_index]['given_name'] + '", "street_and_number":"' + _personDB[person_index]['street_and_number'] + '",'
+                        uploadJSON += '"family_name":"' + _personDB[person_index]['family_name'] + '", "gender":" ' + _personDB[person_index]['gender'] + '", '
+                        if 'fathers_given_name' in _personDB[person_index]:
+                            uploadJSON += '"fathers_given_name":" ' + _personDB[person_index]['fathers_given_name'] + '", '
+                        if 'mothers_given_name' in _personDB[person_index]:
+                            uploadJSON += '"mothers_given_name":"' + _personDB[person_index]['mothers_given_name'] + '", '
+                        uploadJSON += '"age":"' + str(_personDB[person_index]['age']) + '", "date_of_birth":" ' + _personDB[person_index]['date_of_birth'] + '", '
+                        uploadJSON += '"city":"' + _personDB[person_index]['city'] + '", "phone_number":" ' + _personDB[person_index]['phone_number'] + '", '
+                        if 'province_or_state' in _personDB[person_index]:
+                            uploadJSON += '"province_or_state":"' + _personDB[person_index]['province_or_state'] + '", '
+                        uploadJSON += '"pic_filename":"' + pictureFilename + '"'
+                        uploadJSON += '}'
+                        person_index += 1 # move forward in _nameDB
+                        headers = {'Content-type':'application/json', 'Content-length':len(uploadJSON), 'Accept':'application/json'}
+                        # fix hardcoded IP
+                        response = requests.post('http://192.168.1.55/api/v1/person/', data=uploadJSON, headers=headers, auth=('admin', 'admin'))
+
+                res['Breakpoint'] += file
+                ctr += 1
+                if (ctr != length):
+                    res['Status | pictures uploaded'] += ' || '
 
         response = self.create_response(request, res)
         return response

@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.db.models import Max, Min
 import helpers
 
-from vida.vida.models import Person
+from vida.vida.models import Person, Shelter
 
 # class DISTScoreContextMixin(object):
 #
@@ -17,7 +17,7 @@ from vida.vida.models import Person
 #
 #         return context
 
-class IndexView(generic.ListView):
+class PersonIndexView(generic.ListView):
     model = Person
     paginate_by = 30
     queryset = Person.objects.all()
@@ -32,7 +32,7 @@ class IndexView(generic.ListView):
     range_fields = ['age']
 
     def get_queryset(self):
-        queryset = super(IndexView, self).get_queryset()
+        queryset = super(PersonIndexView, self).get_queryset()
 
         query_str = None
         def filter_custom_query(url_args):
@@ -106,6 +106,10 @@ class IndexView(generic.ListView):
 
 
 
-class DetailView(generic.DetailView):
+class PersonDetailView(generic.DetailView):
     model = Person
     template_name = 'vida/person_detail.html'
+
+class ShelterDetailView(generic.DetailView):
+    model = Shelter
+    template_name = 'vida/shelter_detail.html'

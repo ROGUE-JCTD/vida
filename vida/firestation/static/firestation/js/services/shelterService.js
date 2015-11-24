@@ -41,7 +41,7 @@
                             "\"geometry_name\":\"geom\"," +
                             "\"properties\":{ " +
                               "\"name\":\"" + shelters[i].name + "\"," +
-                              "\"url\":\"" + shelters[i].resource_uri + "\"}}";
+                              "\"url\":\"" + '/shelters/' + shelters[i].id + "\"}}";
 
               if (i !== shelters.length - 1)
                 newGeoJSON += ",";
