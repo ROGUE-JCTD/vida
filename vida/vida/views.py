@@ -110,6 +110,7 @@ class PersonDetailView(generic.DetailView):
     model = Person
     template_name = 'vida/person_detail.html'
 
+
 class ShelterDetailView(generic.DetailView):
     model = Shelter
     template_name = 'vida/shelter_detail.html'

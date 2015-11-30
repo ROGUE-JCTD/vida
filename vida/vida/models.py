@@ -38,6 +38,7 @@ class Person(models.Model):
     age = models.CharField(blank=True, max_length=10)
     mothers_given_name = models.CharField(blank=True, max_length=50)
     fathers_given_name = models.CharField(blank=True, max_length=50)
+    date_of_birth = models.CharField(blank=True, max_length=50)
 
     description = models.TextField(blank=True)
 
@@ -47,12 +48,19 @@ class Person(models.Model):
     city = models.CharField(blank=True, max_length=50)
     province_or_state = models.CharField(blank=True, max_length=50)
 
+    phone_number = models.CharField(blank=True, max_length=40)
+
     # if shelters are versioned time-travel extension like, then we have to store a key as opposed to id of row
     shelter_id = models.CharField(blank=True, max_length=100)
 
     notes = models.TextField(blank=True)
 
     barcode = models.CharField(null=True, blank=True, max_length=100)
+
+    injury = models.CharField(blank=True, max_length=100)
+    nationality = models.CharField(blank=True, max_length=100)
+    status = models.CharField(blank=True, max_length=100)
+
     pic_filename = models.CharField(null=True, blank=True, max_length=50)
 
     def __unicode__(self):

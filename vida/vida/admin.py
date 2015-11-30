@@ -4,8 +4,8 @@ import uuid
 
 class PersonAdmin(admin.ModelAdmin):
     fields = ['created_by', 'shelter_id', 'family_name', 'given_name', 'gender', 'age', 'description', 'street_and_number', 'city', 'province_or_state', 'neighborhood', 'notes', 'barcode']
-    list_display = ('family_name', 'given_name', 'gender', 'age', 'created_by')
-    search_fields = ['family_name', 'given_name', 'notes', 'barcode', 'shelter_id']
+    list_display = ('given_name', 'family_name', 'gender', 'age', 'created_by')
+    search_fields = ['given_name', 'family_name', 'notes', 'barcode']
 
 admin.site.register(Person, PersonAdmin)
 

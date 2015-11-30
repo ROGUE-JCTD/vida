@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from tastypie.resources import ModelResource, ALL
+from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.utils import trailing_slash
 from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
@@ -75,6 +75,8 @@ class PersonResource(ModelResource):
             'notes': ALL,
             'barcode': ALL,
             'age': ALL,
+            'shelter_id': ALL_WITH_RELATIONS,
+            'slug': ALL,
         }
         custom_filters = {'custom_query': filter_custom_query}
 
@@ -137,9 +139,9 @@ class PersonResource(ModelResource):
 
                         # Get person information
                         uploadJSON = '{"given_name":"' + _personDB[person_index]['given_name'] + '", "street_and_number":"' + _personDB[person_index]['street_and_number'] + '",'
-                        uploadJSON += '"family_name":"' + _personDB[person_index]['family_name'] + '", "gender":" ' + _personDB[person_index]['gender'] + '", '
+                        uploadJSON += '"family_name":"' + _personDB[person_index]['family_name'] + '", "gender":"' + _personDB[person_index]['gender'] + '", '
                         if 'fathers_given_name' in _personDB[person_index]:
-                            uploadJSON += '"fathers_given_name":" ' + _personDB[person_index]['fathers_given_name'] + '", '
+                            uploadJSON += '"fathers_given_name":"' + _personDB[person_index]['fathers_given_name'] + '", '
                         if 'mothers_given_name' in _personDB[person_index]:
                             uploadJSON += '"mothers_given_name":"' + _personDB[person_index]['mothers_given_name'] + '", '
                         uploadJSON += '"age":"' + str(_personDB[person_index]['age']) + '", "date_of_birth":" ' + _personDB[person_index]['date_of_birth'] + '", '
@@ -153,7 +155,7 @@ class PersonResource(ModelResource):
                         # fix hardcoded IP
                         response = requests.post('http://192.168.1.55/api/v1/person/', data=uploadJSON, headers=headers, auth=('admin', 'admin'))
 
-                res['Breakpoint'] += file
+                res['Status | pictures uploaded'] += file
                 ctr += 1
                 if (ctr != length):
                     res['Status | pictures uploaded'] += ' || '
