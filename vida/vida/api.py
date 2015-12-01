@@ -108,7 +108,7 @@ class PersonResource(ModelResource):
             for file in files:
                 with open('/vida/samples/photos/' + file, 'rb') as f:
                     # fix hardcoded IP
-                    response = requests.post('http://192.168.1.55/api/v1/fileservice/', files={'file': f}, auth=('admin', 'admin'))
+                    response = requests.post('http://localhost/api/v1/fileservice/', files={'file': f}, auth=('admin', 'admin'))
                     if (response.status_code == 201):
                         # Picture successfully uploaded
                         pictureFilename = json.loads(response._content)['name']
@@ -153,7 +153,7 @@ class PersonResource(ModelResource):
                         person_index += 1 # move forward in _nameDB
                         headers = {'Content-type':'application/json', 'Content-length':len(uploadJSON), 'Accept':'application/json'}
                         # fix hardcoded IP
-                        response = requests.post('http://192.168.1.55/api/v1/person/', data=uploadJSON, headers=headers, auth=('admin', 'admin'))
+                        response = requests.post('http://localhost/api/v1/person/', data=uploadJSON, headers=headers, auth=('admin', 'admin'))
 
                 res['Status | pictures uploaded'] += file
                 ctr += 1
