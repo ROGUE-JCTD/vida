@@ -332,7 +332,7 @@
                                 <span>{{ person.province_or_state|default:"" }}</span>
                             </div>
                         </div>
-                        <div id="shelterID" ng-if="getShelterByUUID('{{ person.shelter_id }}') !== 'None'" class="ct-u-displayTableRow">
+                        <div id="shelterID" ng-if="getShelterByUUID('{{ person.shelter_id }}') !== null" class="ct-u-displayTableRow">
                             <div class="ct-u-displayTableCell">
                               <span class="ct-fw-600">Current Shelter</span>
                             </div>
