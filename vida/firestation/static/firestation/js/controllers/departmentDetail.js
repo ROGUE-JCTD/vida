@@ -69,30 +69,22 @@
         $scope.shelterList = [];
         $scope.current_shelter = {};
 
+        $scope.getShelterByUUID = function(id) {
+          var shelter = shelterServ.getShelterByUUID(id);
+          if (shelter) {
+            document.getElementById("shelterID").innerHTML = '<div class="ct-u-displayTableCell">' +
+              '<span class="ct-fw-600">Current Shelter</span></div>' +
+              '<div class="ct-u-displayTableCell text-right">' +
+              '<span>' + shelter.name + '   </span>' +
+              '<a style="display: inline-block;"' +
+              'class="fa fa-chevron-right trigger" href="/shelters/' + shelter.id + '\/" ></a></div> </div>';
+            return shelter;
+          } else
+            return undefined;
+        };
+
         $scope.getAllShelters = function() {
-          shelterServ.getAllShelters(function() {
-            var shelters = shelterServ.getShelters();
-            for (var i = 0; i < shelters.length; i++){
-              $scope.shelterList.push(shelters[i].name);
-            }
-
-            // Assign current drop down to selection
-
-          });
-        };
-
-        $scope.reloadShelters = function() {
-          $scope.shelterList = [];
-
-          $scope.getAllShelters();
-        };
-
-        $scope.getCurrentShelter = function() {
-          return {'name': 'This is defaulted'};
-        };
-
-        $scope.changeShelter = function() {
-          $scope.current_shelter = this.current_shelter;
+          shelterServ.getAllShelters(function() {});
         };
 
         $scope.getAllShelters();

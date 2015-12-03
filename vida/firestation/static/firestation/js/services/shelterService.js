@@ -26,6 +26,16 @@
           return shelters;
         };
 
+        this.getShelterByUUID = function(id) {
+          for (var i = 0; i < shelters.length; i++){
+            if (shelters[i].uuid === id){
+              return shelters[i];
+            }
+          }
+
+          return undefined;
+        };
+
         this.getGeoJSONFromShelters = function() {
           var newGeoJSON = "{" +
               "\"type\":\"FeatureCollection\"," +
