@@ -1,20 +1,15 @@
-import hashlib
-
 from tastypie import fields
 from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
 from tastypie.resources import Resource
+from vida.fileservice.helpers import get_fileservice_files, get_filename_absolute
+from vida.vida.models import Person
 from brpy import init_brpy
 
+import hashlib
 import os
 import tempfile
-
-from tastypie.serializers import Serializer
-
-from vida.fileservice.helpers import get_fileservice_files, get_filename_absolute
-from vida.firestation.api import PrettyJSONSerializer
-from vida.vida.models import Person
 
 
 class FaceSearch(object):
@@ -75,7 +70,6 @@ class FaceSearchResource(Resource):
         filename_name, file_extension = os.path.splitext(bundle.data[u'file'].name)
         destination_file = tempfile.NamedTemporaryFile(suffix=file_extension)
         destination_file.write(file_data)
-        # dest_img = destination_file.read()
 
         # OpenBR shizzy
         facetmpl = self.br.br_load_img(file_data, len(file_data))
@@ -129,6 +123,6 @@ class FaceSearchResource(Resource):
             "total_count": len(peeps)
         }
 
-        bundle.data['objects'] = sorted_peeps.reverse()
-        bundle.data['scores'] = scores.reverse()
+        bundle.data['objects'] = sorted_peeps[::-1]
+        bundle.data['scores'] = scores[::-1]
         return bundle
