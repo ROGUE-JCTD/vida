@@ -97,7 +97,7 @@ class PersonResource(ModelResource):
 
         files = os.listdir('/vida/samples/photos/')
 
-        res = {'Status | pictures uploaded': ''}
+        res = {'Status': 'Pictures Uploaded: '}
 
         ctr = 0
         length = files.__len__()
@@ -107,7 +107,7 @@ class PersonResource(ModelResource):
             person_index = 0
             for file in files:
                 with open('/vida/samples/photos/' + file, 'rb') as f:
-                    url = helpers.get_client_ip(request)
+                    url = helpers.get_network_ip('eth1')
                     response = requests.post('http://' + url + '/api/v1/fileservice/', files={'file': f}, auth=('admin', 'admin'))
                     if (response.status_code == 201):
                         # Picture successfully uploaded
@@ -152,12 +152,14 @@ class PersonResource(ModelResource):
                         uploadJSON += '}'
                         person_index += 1 # move forward in _nameDB
                         headers = {'Content-type':'application/json', 'Content-length':len(uploadJSON), 'Accept':'application/json'}
-                        response = requests.post('http://' + url + '/api/v1/fileservice/', data=uploadJSON, headers=headers, auth=('admin', 'admin'))
+                        postResponse = requests.post('http://' + url + '/api/v1/person/', data=uploadJSON, headers=headers, auth=('admin', 'admin'))
+                        if (postResponse.status_code != 201):
+                            raise self.create_response(request, response)
 
-                res['Status | pictures uploaded'] += file
+                res['Status'] += file
                 ctr += 1
                 if (ctr != length):
-                    res['Status | pictures uploaded'] += ' || '
+                    res['Status'] += ' || '
 
         response = self.create_response(request, res)
         return response
