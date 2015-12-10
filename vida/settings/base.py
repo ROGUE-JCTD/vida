@@ -152,6 +152,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'vida.vida_core',
     'vida.firestation',
+    'vida.facesearch',
     'vida.vida',
     'vida.usgs',
     'vida.fileservice',

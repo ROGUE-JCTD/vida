@@ -9,6 +9,7 @@ from .vida.views import PersonIndexView, PersonDetailView, ShelterDetailView
 from fileservice.api import FileItemResource
 from tastypie.api import Api
 from firestation.views import Home
+from facesearch.api import FaceSearchResource
 
 admin.autodiscover()
 v1_api = Api(api_name='v1')
@@ -18,6 +19,7 @@ v1_api.register(FireDepartmentResource())
 v1_api.register(PersonResource())
 v1_api.register(ShelterResource())
 v1_api.register(FileItemResource())
+v1_api.register(FaceSearchResource())
 
 
 urlpatterns = patterns('',
