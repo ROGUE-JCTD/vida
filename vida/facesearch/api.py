@@ -90,10 +90,9 @@ class FaceSearchResource(Resource):
             scoresmat = self.br.br_compare_template_lists(targets, query)
             for r in range(ntargets):
                 for c in range(nqueries):
-                    percent_match = self.br.br_get_matrix_output_at(scoresmat, r, c)
-                    # percentage match threshold > 50% likelihood
-                    if percent_match > 0.5:
-                        scores.append(('{}{}'.format(hashlib.sha1(img).hexdigest(), _extension), percent_match))
+                    # This is not a percentage match, it's a relative score
+                    similarity = self.br.br_get_matrix_output_at(scoresmat, r, c)
+                    scores.append(('{}{}'.format(hashlib.sha1(img).hexdigest(), _extension), similarity))
 
             # clean up - no memory leaks
             self.br.br_free_template(tmpl)
@@ -108,8 +107,9 @@ class FaceSearchResource(Resource):
 
         sorted_peeps = []
 
-        scores.sort(key=lambda s: s[1])
-        for s in scores:
+        scores.sort(key=lambda s: s[1], reverse=True)
+        # TODO: Make 15 a parameter - right now we return the top 15 results
+        for s in scores[:15]:
             sorted_peeps.append(filter(lambda p: p['pic_filename'] == s[0], peeps)[0])
 
         # bundle the search results
@@ -123,6 +123,6 @@ class FaceSearchResource(Resource):
             "total_count": len(peeps)
         }
 
-        bundle.data['objects'] = sorted_peeps[::-1]
-        bundle.data['scores'] = scores[::-1]
+        bundle.data['objects'] = sorted_peeps
+        bundle.data['scores'] = scores
         return bundle
