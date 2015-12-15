@@ -22,6 +22,8 @@ class Shelter(models.Model):
     city = models.CharField(blank=True, max_length=50)
     province_or_state = models.CharField(blank=True, max_length=50)
 
+    site_details = models.CharField(blank=True, max_length=200)
+
     notes = models.TextField(blank=True)
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
     uuid = models.CharField(blank=False, max_length=100)

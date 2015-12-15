@@ -1,6 +1,7 @@
 from django.contrib import admin
 from vida.vida.models import Person, Shelter
 import uuid
+import helpers
 
 class PersonAdmin(admin.ModelAdmin):
     fields = ['created_by', 'shelter_id', 'family_name', 'given_name', 'gender', 'age', 'description', 'street_and_number', 'city', 'province_or_state', 'neighborhood', 'notes', 'barcode']
@@ -17,11 +18,17 @@ class ShelterAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.uuid = str(uuid.uuid4()).decode('unicode-escape') # Make new uuid for shelter
+        obj.site_details = str('http://' + helpers.get_network_ip('eth1') + '/shelters/')
         return super(ShelterAdmin, self).save_model(request, obj, form, change)
+
+    def response_post_save_add(self, request, obj):
+        obj.site_details += str(obj.id) + '/'
+        obj.save() # This adds the ID after the save, because Django doesn't have the ID field before creation
+        return super(ShelterAdmin, self).response_post_save_add(request, obj)
 
     def delete_selected(self, request, obj):
         for shelter in obj.all(): # All selected shelters
-            for i, person in enumerate(Person.objects.all()): # Find whoever had that shelter uuid (optimize?)
+            for i, person in enumerate(Person.objects.all()): # Find whoever (people) had that shelter uuid (optimize?)
                 if person.shelter_id == shelter.uuid:
                      person.shelter_id = ''.decode('unicode-escape')  # Shelter has been removed, no need for them to hold shelterID anymore
                      person.save()
