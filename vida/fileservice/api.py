@@ -10,6 +10,8 @@ import helpers
 import os
 import hashlib
 
+from vida.facesearch.tasks import index_face
+
 
 class FileItem(object):
     name = ''
@@ -108,6 +110,11 @@ class FileItemResource(Resource):
         bundle.obj.name = filename
         with open(helpers.get_filename_absolute(filename), 'wb+') as destination_file:
             destination_file.write(file_data)
+
+        # index with OpenBR
+        if u'index' not in bundle.data or 'false' != bundle.data[u'index']:
+            index_face(helpers.get_filename_absolute(filename))
+
         # remove the file object passed in so that the response is more concise about what this file will be referred to
         bundle.data.pop(u'file', None)
         return bundle

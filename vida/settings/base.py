@@ -11,7 +11,8 @@ ADMINS = (
 MANAGERS = ADMINS
 
 FILESERVICE_CONFIG = {
-    'store_dir': '/webapps/vida/fileservice_store'
+    'store_dir': '/webapps/vida/fileservice_store',
+    'gallery_file': '/webapps/vida/fileservice_store/gallery.gal'
 }
 
 DATABASES = {
