@@ -5,6 +5,8 @@ from tastypie.bundle import Bundle
 from tastypie.resources import Resource
 from django.conf.urls import url
 from django.views.static import serve
+from django.utils.encoding import smart_str
+from django.http import HttpResponse
 from tastypie import fields
 import helpers
 import os
@@ -124,6 +126,8 @@ class FileItemResource(Resource):
         return [
             url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/download%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('download'), name="api_fileitem_download"),
             url(r"^(?P<resource_name>%s)/(?P<name>[\w\d_.-]+)/download%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('download'), name="api_fileitem_download"),
+            url(r"^(?P<resource_name>%s)/(?P<pk>\w[\w/-]*)/view%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('view'), name="api_fileitem_view"),
+            url(r"^(?P<resource_name>%s)/(?P<name>[\w\d_.-]+)/view%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('view'), name="api_fileitem_view"),
             url(r"^(?P<resource_name>%s)/(?P<name>[\w\d_.-]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail_name"),
             url(r"^(?P<resource_name>%s)/(?P<id>[\d]+)/$" % self._meta.resource_name, self.wrap_view('dispatch_detail'), name="api_dispatch_detail"),
         ]
@@ -131,6 +135,7 @@ class FileItemResource(Resource):
     def download(self, request, **kwargs):
         # method check to avoid bad requests
         self.method_check(request, allowed=['get'])
+
         response = None
         file_item = FileItemResource.get_file_item(kwargs)
         if file_item:
@@ -143,3 +148,37 @@ class FileItemResource(Resource):
             response = self.create_response(request, {'status': 'file not found'})
 
         return response
+
+    def view(self, request, **kwargs):
+        '''
+        allow a file to be viewed as opposed to download. This is particularly needed when a video file is stored
+        in the fileservice and user wants to be able to use a view the video as opposed to having to download it
+        first. It passes the serving of the file to nginx/apache which will return all the proper headers allowing,
+        say, html5's video viewer's 'seek' indicator/knob to work. Otherwise the video is only played sequentially
+
+        Note that nginx/apache need to be configured accordingly. nginx for example:
+        location /fileservice_store_internal/ {
+           # forces requests to be authorized
+           internal;
+           alias   /webapps/vida/fileservice_store/;
+        }
+
+        example use:
+        http://192.168.33.15/api/v1/fileservice/med.mp4/view/
+        '''
+        # method check to avoid bad requests
+        self.method_check(request, allowed=['get'])
+        file_item = FileItemResource.get_file_item(kwargs)
+        if file_item:
+            # set content_type to '' so that content_type from nginx/apache is returned
+            response = HttpResponse(content_type='')
+            file_with_route = smart_str('{}{}'.format(helpers.get_fileservice_server_route_internal(), file_item.name))
+            # apache header
+            response['X-Sendfile'] = file_with_route
+            # nginx header
+            response['X-Accel-Redirect'] = file_with_route
+
+        if not response:
+            response = self.create_response(request, {'status': 'filename not specified'})
+        return response
+

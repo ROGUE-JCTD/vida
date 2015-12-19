@@ -25,6 +25,9 @@ def get_fileservice_dir():
     conf = getattr(settings, 'FILESERVICE_CONFIG', {})
     return conf.get('store_dir', './fileservice_store')
 
+def get_fileservice_server_route_internal():
+    conf = getattr(settings, 'FILESERVICE_CONFIG', {})
+    return conf.get('server_route_internal', '/server_route_internal/')
 
 def get_gallery_file():
     conf = getattr(settings, 'FILESERVICE_CONFIG', {})
