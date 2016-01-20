@@ -9,6 +9,7 @@ from django.db.models import Q
 import helpers
 import os
 import requests, json
+import uuid
 
 from vida.facesearch.tasks import reindex_gallery
 from vida.fileservice.helpers import get_gallery_file
@@ -102,10 +103,6 @@ class PersonResource(ModelResource):
 
         res = {'Status': 'Pictures Uploaded: '}
 
-        # reset the OpenBR Gallery
-        if os.path.isfile(get_gallery_file()):
-            os.remove(get_gallery_file())
-
         ctr = 0
         length = files.__len__()
         with open('/vida/samples/MOCK_DATA.json') as personDB:
@@ -156,7 +153,7 @@ class PersonResource(ModelResource):
                         uploadJSON += '"city":"' + _personDB[person_index]['city'] + '", "phone_number":" ' + _personDB[person_index]['phone_number'] + '", '
                         if 'province_or_state' in _personDB[person_index]:
                             uploadJSON += '"province_or_state":"' + _personDB[person_index]['province_or_state'] + '", '
-                        uploadJSON += '"pic_filename":"' + pictureFilename + '"'
+                        uploadJSON += '"pic_filename":"' + pictureFilename + '", "uuid":"' + str(uuid.uuid4()).decode('unicode-escape') + '"'
                         uploadJSON += '}'
                         person_index += 1 # move forward in _nameDB
                         headers = {'Content-type':'application/json', 'Content-length':len(uploadJSON), 'Accept':'application/json'}

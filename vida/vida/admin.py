@@ -8,6 +8,10 @@ class PersonAdmin(admin.ModelAdmin):
     list_display = ('given_name', 'family_name', 'gender', 'age', 'created_by')
     search_fields = ['given_name', 'family_name', 'notes', 'barcode']
 
+    def save_model(self, request, obj, form, change):
+        obj.uuid = str(uuid.uuid4()).decode('unicode-escape') # Make new uuid for person (important for version-ing)
+        return super(PersonAdmin, self).save_model(request, obj, form, change)
+
 admin.site.register(Person, PersonAdmin)
 
 class ShelterAdmin(admin.ModelAdmin):

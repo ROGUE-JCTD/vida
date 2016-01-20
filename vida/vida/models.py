@@ -83,6 +83,9 @@ class Person(models.Model):
     # this will store a uuid of the shelter on creation (can be used for database indexing)
     shelter_id = models.CharField(blank=True, max_length=100, choices=SHELTER_CHOICES, default='None')
 
+    # this will be a uuid of each person so it can be later referenced for version-ing
+    uuid = models.CharField(blank=False, max_length=100, default='None')
+
     notes = models.TextField(blank=True)
 
     barcode = models.CharField(null=True, blank=True, max_length=100)
