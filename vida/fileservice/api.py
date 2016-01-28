@@ -12,6 +12,11 @@ import helpers
 import os
 import hashlib
 
+from cStringIO import StringIO
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage as storage
+from PIL import Image
+
 from vida.facesearch.tasks import index_face
 
 
@@ -112,6 +117,30 @@ class FileItemResource(Resource):
         bundle.obj.name = filename
         with open(helpers.get_filename_absolute(filename), 'wb+') as destination_file:
             destination_file.write(file_data)
+
+            # make thumbnail on server
+            THUMB_SIZE = (256, 256)
+            try:
+                from PIL import ImageFile
+                ImageFile.LOAD_TRUNCATED_IMAGES = True
+                image = Image.open(destination_file.name)
+            except:
+                return False
+
+            image.thumbnail(THUMB_SIZE, Image.ANTIALIAS)
+
+            if file_extension in ['.jpg', '.jpeg']:
+                FTYPE = 'JPEG'
+            elif file_extension == '.gif':
+                FTYPE = 'GIF'
+            elif file_extension == '.png':
+                FTYPE = 'PNG'
+            else:
+                return False    # Unrecognized file type
+
+            # Save thumbnail to in-memory file
+            file_thumbnail_name = helpers.get_fileservice_dir() + "/" + file_sha1 + "_thumb" + file_extension
+            image.save(file_thumbnail_name, FTYPE)
 
         # index with OpenBR
         if u'index' not in bundle.data or 'false' != bundle.data[u'index']:

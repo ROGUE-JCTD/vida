@@ -96,6 +96,8 @@ class Person(models.Model):
 
     pic_filename = models.CharField(null=True, blank=True, max_length=50)
 
+    geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
+
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
         SHELTER_CHOICES = []
