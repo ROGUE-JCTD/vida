@@ -4,7 +4,7 @@ import uuid
 import helpers
 
 class PersonAdmin(admin.ModelAdmin):
-    fields = ['created_by', 'shelter_id', 'family_name', 'given_name', 'gender', 'age', 'description', 'street_and_number', 'city', 'province_or_state', 'neighborhood', 'notes', 'barcode']
+    fields = ['created_by', 'shelter_id', 'family_name', 'given_name', 'gender', 'age', 'description', 'street_and_number', 'city', 'province_or_state', 'neighborhood', 'notes', 'barcode', 'geom']
     list_display = ('given_name', 'family_name', 'gender', 'age', 'created_by')
     search_fields = ['given_name', 'family_name', 'notes', 'barcode']
 
