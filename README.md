@@ -7,3 +7,4 @@ VIDA consists of a web and mobile application. The mobile app allows for respond
 Notes
 =====
 This repository complements the [vida-ansible](https://github.com/ROGUE-JCTD/vida-ansible.git) repository. Be sure to read the readme in that repo as well. 
+
