@@ -12,7 +12,6 @@ MANAGERS = ADMINS
 
 FILESERVICE_CONFIG = {
     'store_dir': '/webapps/vida/fileservice_store',
-    'gallery_file': '/webapps/vida/fileservice_store/gallery.gal',
 
     # instead of having django serve the media files, fileservice passes the work to nginx or apache
     # nginx config would look like:

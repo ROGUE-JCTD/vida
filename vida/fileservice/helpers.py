@@ -2,7 +2,6 @@ from django.conf import settings
 from datetime import datetime
 import os
 
-
 # convert dict to object
 class DictToObject(object):
     def __init__(self, d):
@@ -13,7 +12,6 @@ class DictToObject(object):
         if type(value) == type({}):
             return DictToObject(value)
         return value
-
 
 """
 example settings file
@@ -28,11 +26,6 @@ def get_fileservice_dir():
 def get_fileservice_server_route_internal():
     conf = getattr(settings, 'FILESERVICE_CONFIG', {})
     return conf.get('server_route_internal', '/server_route_internal/')
-
-def get_gallery_file():
-    conf = getattr(settings, 'FILESERVICE_CONFIG', {})
-    return conf.get('gallery_file', get_fileservice_dir() + '/gallery.gal')
-
 
 def u_to_str(string):
     return string.encode('ascii', 'ignore')
@@ -63,7 +56,3 @@ def file_exists(filename):
 
 def get_filename_absolute(filename):
     return '{}/{}'.format(get_fileservice_dir(), filename)
-
-
-def get_fileservice_files_abs():
-    return [get_filename_absolute(i) for i in get_fileservice_files()]

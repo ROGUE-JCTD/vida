@@ -17,9 +17,6 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage as storage
 from PIL import Image
 
-from vida.facesearch.tasks import index_face
-
-
 class FileItem(object):
     name = ''
 
@@ -141,10 +138,6 @@ class FileItemResource(Resource):
             # Save thumbnail to in-memory file
             file_thumbnail_name = helpers.get_fileservice_dir() + "/" + file_sha1 + "_thumb" + file_extension
             image.save(file_thumbnail_name, FTYPE)
-
-        # index with OpenBR
-        if u'index' not in bundle.data or 'false' != bundle.data[u'index']:
-            index_face(helpers.get_filename_absolute(filename))
 
         # remove the file object passed in so that the response is more concise about what this file will be referred to
         bundle.data.pop(u'file', None)

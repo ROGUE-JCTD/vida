@@ -11,8 +11,6 @@ import os
 import requests, json
 import uuid
 
-from vida.facesearch.tasks import reindex_gallery
-from vida.fileservice.helpers import get_gallery_file
 from vida.vida.models import Person
 from vida.vida.models import Shelter
 
@@ -112,11 +110,10 @@ class PersonResource(ModelResource):
             for file in files:
                 with open('/vida/samples/photos/' + file, 'rb') as f:
                     url = helpers.get_network_ip('eth1')
-                    response = requests.post('http://' + url + '/api/v1/fileservice/', data={'index': 'false'}, files={'file': f}, auth=('admin', 'admin'))
-                    if response.status_code == 201:
+                    response = requests.post('http://' + url + '/api/v1/fileservice/', files={'file': f}, auth=('admin', 'admin'))
+                    if (response.status_code == 201):
                         # Picture successfully uploaded
                         pictureFilename = json.loads(response._content)['name']
-
                         # Separate gender
                         isFemale = False
                         if 'female' in file:
@@ -165,8 +162,6 @@ class PersonResource(ModelResource):
                 ctr += 1
                 if (ctr != length):
                     res['Status'] += ' || '
-
-        reindex_gallery()
 
         response = self.create_response(request, res)
         return response
