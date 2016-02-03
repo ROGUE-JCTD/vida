@@ -108,3 +108,18 @@ class Person(models.Model):
 
     def __unicode__(self):
         return self.given_name
+
+    def save(self, *args, **kwargs):
+        # Customized the save method to update change history
+        # First, check if we have a new geometry, if so then store it in location history
+        # TODO: if other fields have changed then log in the change history table
+        super(Person, self).save(*args, **kwargs)  # Save the Person data to the DB
+
+
+
+class PersonLocationHistory(models.Model):
+    geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
+    start_date = models.DateTimeField(null=True)
+    stop_date = models.DateTimeField(null=True)
+    person = models.ForeignKey(Person, on_delete=models.PROTECT)
+    shelter = models.ForeignKey(Shelter, on_delete=models.PROTECT)
