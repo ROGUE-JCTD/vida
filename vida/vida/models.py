@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.gis.db import models
+from django.db.models.signals import post_init
 from django.contrib.gis.geos import Point
 import helpers
 
@@ -98,6 +99,12 @@ class Person(models.Model):
 
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
 
+    # Set what fields we care about in the person record being changed from a history perspective.
+    # we may not care about all fields being logged as changed
+    @property
+    def change_track_fields(self):
+        return ('geom', 'given_name', 'family_name')
+
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
         SHELTER_CHOICES = []
@@ -109,12 +116,34 @@ class Person(models.Model):
     def __unicode__(self):
         return self.given_name
 
+    def add_location_history(self):
+        curr_value = getattr(self, 'geom')
+        orig_value = getattr(self, '_original_geom')
+        if curr_value != orig_value:
+            # we have a hit! new geom is different.  Add it to the history, note that we
+            # want to check for an older one and close it
+            print("geometry changed")
+
     def save(self, *args, **kwargs):
         # Customized the save method to update change history
-        # First, check if we have a new geometry, if so then store it in location history
-        # TODO: if other fields have changed then log in the change history table
+        # if the private key is not null then the person exists, otherwise don't bother checking
+        existing_person = bool(self.pk)
+        # go ahead and save the changes
         super(Person, self).save(*args, **kwargs)  # Save the Person data to the DB
+        if existing_person:
+            # First, check if we have a new geometry, if so then store it in location history
+            self.add_location_history()
+            # TODO: if other fields have changed then log in the change history table
 
+
+# Whenever a person model is initialized we make a copy of the current fields for the person object,
+# that way we can check for changes and update the appropriate history table(s)
+def person_post_init(sender, instance, **kwargs):
+    if instance.pk:
+        for field in instance.change_track_fields:
+            setattr(instance, '_original_%s' % field, getattr(instance, field))
+
+post_init.connect(person_post_init, sender=Person, dispatch_uid='vida.person.person_post_init')
 
 
 class PersonLocationHistory(models.Model):
