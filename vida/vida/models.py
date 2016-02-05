@@ -3,6 +3,7 @@ from django.contrib.gis.db import models
 from django.db.models.signals import post_init
 from django.contrib.gis.geos import Point
 import helpers
+import datetime
 
 class Shelter(models.Model):
 
@@ -123,6 +124,9 @@ class Person(models.Model):
             # we have a hit! new geom is different.  Add it to the history, note that we
             # want to check for an older one and close it
             print("geometry changed")
+            change = PersonLocationHistory.objects.create(geom=curr_value, start_date=datetime.datetime.now(),
+                                                          person=self)
+            self.personlocationhistory_set(change)
 
     def save(self, *args, **kwargs):
         # Customized the save method to update change history
@@ -151,4 +155,5 @@ class PersonLocationHistory(models.Model):
     start_date = models.DateTimeField(null=True)
     stop_date = models.DateTimeField(null=True)
     person = models.ForeignKey(Person, on_delete=models.PROTECT)
-    shelter = models.ForeignKey(Shelter, on_delete=models.PROTECT)
+    shelter = models.ForeignKey(Shelter, on_delete=models.PROTECT, null=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
