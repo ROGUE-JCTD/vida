@@ -124,9 +124,11 @@ class Person(models.Model):
             # we have a hit! new geom is different.  Add it to the history, note that we
             # want to check for an older one and close it
             print("geometry changed")
-            change = PersonLocationHistory.objects.create(geom=curr_value, start_date=datetime.datetime.now(),
-                                                          person=self)
-            self.personlocationhistory_set(change)
+            newRecord = PersonLocationHistory(geom=curr_value, start_date=datetime.datetime.now(),
+                                              person_uuid=self.uuid, created_by=self.created_by,
+                                              shelter_uuid=self.shelter_id)
+            newRecord.save()
+
 
     def save(self, *args, **kwargs):
         # Customized the save method to update change history
@@ -154,6 +156,6 @@ class PersonLocationHistory(models.Model):
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
     start_date = models.DateTimeField(null=True)
     stop_date = models.DateTimeField(null=True)
-    person = models.ForeignKey(Person, on_delete=models.PROTECT)
-    shelter = models.ForeignKey(Shelter, on_delete=models.PROTECT, null=True)
+    person_uuid = models.CharField(blank=True, max_length=100, default='None')
+    shelter_uuid = models.CharField(blank=True, max_length=100, default='None')
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
