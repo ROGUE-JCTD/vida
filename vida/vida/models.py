@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.db.models.signals import post_init
-from django.contrib.gis.geos import Point
+from django.contrib.gis.geos import (Point, GEOSGeometry)
 import helpers
 import datetime
 
@@ -119,15 +119,30 @@ class Person(models.Model):
 
     def add_location_history(self):
         curr_value = getattr(self, 'geom')
-        orig_value = getattr(self, '_original_geom')
-        if curr_value != orig_value:
+        is_new_geom = False
+        if hasattr(self, '_original_geom'):
+            orig_value = getattr(self, '_original_geom')
+            if curr_value != orig_value:
+                print("Existing person, new location")
+                is_new_geom = True
+        else:
+            print("New person record, record their initial location")
+            is_new_geom = True
+
+        if is_new_geom:
             # we have a hit! new geom is different.  Add it to the history, note that we
             # want to check for an older one and close it
             print("geometry changed")
-            newRecord = PersonLocationHistory(geom=curr_value, start_date=datetime.datetime.now(),
-                                              person_uuid=self.uuid, created_by=self.created_by,
+            for r in PersonLocationHistory.objects.filter(person_id=self.id, stop_date__isnull=True):
+                r.stop_date = datetime.datetime.now()
+                r.save()
+                print(r)
+            new_record = PersonLocationHistory(geom=curr_value, start_date=datetime.datetime.now(),
+                                              person_id=self, created_by=self.created_by,
                                               shelter_uuid=self.shelter_id)
-            newRecord.save()
+            new_record.save()
+            # now, check if there were any previous history entry for this person w/ no close date and close those
+
 
 
     def save(self, *args, **kwargs):
@@ -136,10 +151,12 @@ class Person(models.Model):
         existing_person = bool(self.pk)
         # go ahead and save the changes
         super(Person, self).save(*args, **kwargs)  # Save the Person data to the DB
+        # First, check if we have a new geometry, if so then store it in location history, which we do
+        # if the record is new or updated
+        self.add_location_history()
+        # TODO: if other fields have changed then log in the change history table
         if existing_person:
-            # First, check if we have a new geometry, if so then store it in location history
-            self.add_location_history()
-            # TODO: if other fields have changed then log in the change history table
+            print("Update of existing person record, add to history table")
 
 
 # Whenever a person model is initialized we make a copy of the current fields for the person object,
@@ -149,13 +166,14 @@ def person_post_init(sender, instance, **kwargs):
         for field in instance.change_track_fields:
             setattr(instance, '_original_%s' % field, getattr(instance, field))
 
+
 post_init.connect(person_post_init, sender=Person, dispatch_uid='vida.person.person_post_init')
 
 
 class PersonLocationHistory(models.Model):
     geom = models.PointField(srid=4326, default='POINT(0.0 0.0)')
-    start_date = models.DateTimeField(null=True)
+    start_date = models.DateTimeField(null=False)
     stop_date = models.DateTimeField(null=True)
-    person_uuid = models.CharField(blank=True, max_length=100, default='None')
+    person_id = models.ForeignKey(Person, null=False, on_delete=models.PROTECT)
     shelter_uuid = models.CharField(blank=True, max_length=100, default='None')
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
