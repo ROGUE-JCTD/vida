@@ -5,14 +5,14 @@ from django.contrib.gis.geos import (Point, GEOSGeometry)
 import helpers
 import datetime
 
-class Shelter(models.Model):
 
+class Shelter(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
 
     # time travel / verioning fields
-    #start_date = models.DateTimeField(blank=True)
-    #stop_date = models.DateTimeField(blank=True)
+    # start_date = models.DateTimeField(blank=True)
+    # stop_date = models.DateTimeField(blank=True)
 
     # basic
     name = models.CharField(blank=True, max_length=50)
@@ -35,7 +35,6 @@ class Shelter(models.Model):
 
 
 class Person(models.Model):
-
     HEALTH_TREATMENT_CHOICES = [
         (0, 'Unknown'),
         (1, 'None'),
@@ -54,7 +53,7 @@ class Person(models.Model):
         (2, 'Female'),
         (3, 'Other')]
 
-    SHELTER_CHOICES = [] # will be created dynamically, this is to init shelter_id to have choices
+    SHELTER_CHOICES = []  # will be created dynamically, this is to init shelter_id to have choices
 
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -104,46 +103,59 @@ class Person(models.Model):
     # we may not care about all fields being logged as changed
     @property
     def change_track_fields(self):
-        return ('geom', 'given_name', 'family_name')
+        return 'given_name', 'family_name', 'gender', 'age', 'mothers_given_name', 'fathers_given_name','date_of_birth', 'street_and_number', 'neighborhood', 'city', 'province_or_state', 'phone_number', 'shelter_id', 'barcode', 'injury', 'nationality', 'status', 'pic_filename'
 
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)
         SHELTER_CHOICES = []
         for i, shelter in enumerate(Shelter.objects.all()):
             SHELTER_CHOICES.append('')  # will create index for list, dynamically updating the size
-            SHELTER_CHOICES[i] = (shelter.uuid, shelter.name)   # overwrite that index with choice (as tuple)
+            SHELTER_CHOICES[i] = (shelter.uuid, shelter.name)  # overwrite that index with choice (as tuple)
         self._meta.get_field_by_name('shelter_id')[0]._choices = SHELTER_CHOICES
 
     def __unicode__(self):
         return self.given_name
 
     def add_location_history(self):
-        curr_value = getattr(self, 'geom')
-        is_new_geom = False
-        if hasattr(self, '_original_geom'):
-            orig_value = getattr(self, '_original_geom')
-            if curr_value != orig_value:
-                print("Existing person, new location")
-                is_new_geom = True
-        else:
-            print("New person record, record their initial location")
-            is_new_geom = True
-
-        if is_new_geom:
-            # we have a hit! new geom is different.  Add it to the history, note that we
-            # want to check for an older one and close it
-            print("geometry changed")
-            for r in PersonLocationHistory.objects.filter(person_id=self.id, stop_date__isnull=True):
-                r.stop_date = datetime.datetime.now()
-                r.save()
-                print(r)
-            new_record = PersonLocationHistory(geom=curr_value, start_date=datetime.datetime.now(),
-                                              person_id=self, created_by=self.created_by,
-                                              shelter_uuid=self.shelter_id)
-            new_record.save()
+        if hasattr(self, 'geom'):  # if there is no geometry then no need to record a history
+            curr_value = getattr(self, 'geom')
             # now, check if there were any previous history entry for this person w/ no close date and close those
+            is_new_geom = False
+            if hasattr(self, '_original_geom'):
+                orig_value = getattr(self, '_original_geom')
+                if curr_value != orig_value:
+                    print("Existing person, new location")
+                    is_new_geom = True
+            else:
+                print("New person record, record their initial location")
+                is_new_geom = True
 
+            if is_new_geom:
+                # we have a hit! new geom is different.  Add it to the history, note that we
+                # want to check for an older one and close it
+                print("geometry changed")
+                for r in PersonLocationHistory.objects.filter(person_id=self.id, stop_date__isnull=True):
+                    r.stop_date = datetime.datetime.now()
+                    r.save()
+                    print(r)
+                new_record = PersonLocationHistory(geom=curr_value, start_date=datetime.datetime.now(),
+                                                   person_id=self, created_by=self.created_by,
+                                                   shelter_uuid=self.shelter_id)
+                new_record.save()
 
+    def add_field_history(self):
+        # TODO: note: does not currently track 'notes' and 'description' fields. THose are TextField type, rather than
+        # char type, so could be larger.  Need a use case discussion to determine how to handle
+        # Also, this code only works for string field types.  If we add integer or date format fields
+        # (like for age, DOB) then do we need to deal with type conversion?
+        for field in self.change_track_fields:
+            new_val = getattr(self, field)
+            orig_val = getattr(self, '_original_%s' % field)
+            if new_val != orig_val:
+                new_record = PersonFieldHistory(field_name=field, date_of_change=datetime.datetime.now(),
+                                                person=self, changed_by=self.created_by,
+                                                old_value=orig_val, new_value=new_val)
+                new_record.save()
 
     def save(self, *args, **kwargs):
         # Customized the save method to update change history
@@ -157,7 +169,7 @@ class Person(models.Model):
         # TODO: if other fields have changed then log in the change history table
         if existing_person:
             print("Update of existing person record, add to history table")
-
+            self.add_field_history()
 
 # Whenever a person model is initialized we make a copy of the current fields for the person object,
 # that way we can check for changes and update the appropriate history table(s)
@@ -165,7 +177,6 @@ def person_post_init(sender, instance, **kwargs):
     if instance.pk:
         for field in instance.change_track_fields:
             setattr(instance, '_original_%s' % field, getattr(instance, field))
-
 
 post_init.connect(person_post_init, sender=Person, dispatch_uid='vida.person.person_post_init')
 
@@ -177,3 +188,12 @@ class PersonLocationHistory(models.Model):
     person_id = models.ForeignKey(Person, null=False, on_delete=models.PROTECT)
     shelter_uuid = models.CharField(blank=True, max_length=100, default='None')
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+
+
+class PersonFieldHistory(models.Model):
+    field_name = models.CharField(blank=False, max_length=64, default='None')
+    old_value = models.CharField(max_length=128)
+    new_value = models.CharField(max_length=128)
+    date_of_change = models.DateTimeField(null=False)
+    changed_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    person = models.ForeignKey(Person, null=False, on_delete=models.PROTECT)
