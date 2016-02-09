@@ -65,9 +65,10 @@
 
       })
 
-      .controller('personController', function($scope, $rootScope, $http, shelterServ) {
+    .controller('personController', function($scope, $rootScope, $http, shelterServ) {
         $scope.shelterList = [];
         $scope.current_shelter = {};
+            $scope.personHistory = [];
 
         $scope.getShelterByUUID = function(id) {
           var shelter = shelterServ.getShelterByUUID(id);
@@ -88,5 +89,5 @@
         };
 
         $scope.getAllShelters();
-      })
+    })
 })();

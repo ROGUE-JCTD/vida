@@ -105,7 +105,6 @@ class PersonIndexView(generic.ListView):
         return queryset
 
 
-
 class PersonDetailView(generic.DetailView):
     model = Person
     template_name = 'vida/person_detail.html'

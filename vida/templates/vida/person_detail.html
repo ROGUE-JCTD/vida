@@ -11,11 +11,11 @@
 <head lang="en">
     <meta charset="UTF-8">
     <meta name="description" content="{{ object.description }} Learn more about this community's risks.">
-    <meta name="author" content="Prominent Edge LLC">
+    <meta name="author" content="Prominent Edge LLC, Noblis NSP LLC">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-    <title>Community Assessment: {{ person.given_name }}</title>
+    <title>{{ person.given_name }} {{ person.family_name }}</title>
     {% include 'firestation/_favicon.html' %}
 
 
@@ -340,15 +340,14 @@
                               <span>None</span>
                             </div>
                         </div>
-                        {% if object.website %}
-                        <div class="ct-u-displayTableRow">
+                        <div id="personHistory" class="ct-u-displayTableRow">
                             <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600"><a href="{{ object.website }}">Official Website <i class="fa fa-external-link ct-fw-600"></i></a></span>
+                              <span class="ct-fw-600">Record History</span>
                             </div>
-                            <div class="ct-u-displayTableCell text-right">
+                            <div class="ct-u-displayTableCell text-right" >
+                              <span>{{ person.personfieldhistory_set.all }}</span>
                             </div>
                         </div>
-                        {% endif %}
                     </div>
                 </div>
             </div>
