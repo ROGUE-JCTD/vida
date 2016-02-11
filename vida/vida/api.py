@@ -196,6 +196,10 @@ class PersonResource(ModelResource):
 
         return filtered
 
+    def hydrate(self, bundle):
+        bundle.obj.created_by = bundle.request.user # curr_user[0]
+        return bundle
+
 
 class ShelterResource(ModelResource):
     created_by = fields.ToOneField(UserResource, 'created_by',  full=True, blank=True, null=True)
