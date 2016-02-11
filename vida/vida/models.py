@@ -165,7 +165,7 @@ class Person(models.Model):
         super(Person, self).save(*args, **kwargs)  # Save the Person data to the DB
         # First, check if we have a new geometry, if so then store it in location history, which we do
         # if the record is new or updated
-#        self.add_location_history()
+        self.add_location_history()
         # TODO: if other fields have changed then log in the change history table
         if existing_person:
             self.add_field_history()

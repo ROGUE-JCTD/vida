@@ -197,7 +197,7 @@ class PersonResource(ModelResource):
         return filtered
 
     def hydrate(self, bundle):
-        bundle.obj.created_by = bundle.request.user # curr_user[0]
+        bundle.obj.created_by = bundle.request.user
         return bundle
 
 
