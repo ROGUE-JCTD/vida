@@ -343,9 +343,41 @@
                         <div id="personHistory" class="ct-u-displayTableRow">
                             <div class="ct-u-displayTableCell">
                               <span class="ct-fw-600">Record History</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right" >
-                              <span>{{ person.personfieldhistory_set.all }}</span>
+                                <style>
+                                #history {
+
+                                }
+                                #history table,#history th,#history td {
+                                  border-collapse: collapse;
+                                  border: 1px solid gray;
+                                  padding-left: 2px;
+                                  padding-right: 2px;
+                                }
+                                #history .tr_body:hover {
+                                  background-color: #f5f5f5
+                                }
+                                #history th, #history td {
+                                  padding-left: 15px;
+                                  padding-right: 15px;
+                                }
+                                #history th {
+                                  text-align: center;
+                                }
+                                </style>
+                                <table id="history">
+                                    <tr >
+                                        <th>Field</th><th>Old Value</th><th>New Value</th><th>Change Date</th><th>Changed By</th>
+                                    </tr>
+                                    {% for change in person.personfieldhistory_set.all %}
+                                        <tr class="tr_body">
+                                        <td>{{ change.field_name }}</td>
+                                            <td>{{ change.old_value }}</td>
+                                            <td>{{ change.new_value }}</td>
+                                            <td>{{ change.date_of_change }} </td>
+                                            <td>{{ change.changed_by }} </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
                             </div>
                         </div>
                     </div>
