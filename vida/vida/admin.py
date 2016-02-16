@@ -1,12 +1,18 @@
-from django.contrib import admin
+# from django.contrib import admin
+from django.contrib.gis import admin
+from django.contrib.gis.geos import (Point, GEOSGeometry)
 from vida.vida.models import Person, Shelter
 import uuid
 import helpers
 
-class PersonAdmin(admin.ModelAdmin):
+
+class PersonAdmin(admin.GeoModelAdmin):
     fields = ['created_by', 'shelter_id', 'family_name', 'given_name', 'gender', 'age', 'description', 'street_and_number', 'city', 'province_or_state', 'neighborhood', 'notes', 'barcode', 'geom']
     list_display = ('given_name', 'family_name', 'gender', 'age', 'created_by')
     search_fields = ['given_name', 'family_name', 'notes', 'barcode']
+    default_lon = -61.45
+    default_lat = 10.65
+    default_zoom = 12
 
     def save_model(self, request, obj, form, change):
         obj.uuid = str(uuid.uuid4()).decode('unicode-escape') # Make new uuid for person (important for version-ing)
@@ -14,11 +20,16 @@ class PersonAdmin(admin.ModelAdmin):
 
 admin.site.register(Person, PersonAdmin)
 
-class ShelterAdmin(admin.ModelAdmin):
+
+class ShelterAdmin(admin.GeoModelAdmin):
     actions = ['delete_selected']
     fields = ['created_by', 'name', 'description', 'street_and_number', 'city', 'province_or_state', 'neighborhood', 'notes', 'geom']
     list_display = ('name', 'created_by', 'neighborhood')
     search_fields = ['name', 'street_and_number', 'city', 'province_or_state', 'neighborhood', 'uuid']
+
+    default_lon = -61.45
+    default_lat = 10.65
+    default_zoom = 12
 
     def save_model(self, request, obj, form, change):
         obj.uuid = str(uuid.uuid4()).decode('unicode-escape') # Make new uuid for shelter
