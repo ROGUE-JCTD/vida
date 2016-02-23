@@ -169,7 +169,8 @@ INSTALLED_APPS = (
     'storages',
     'widget_tweaks',
     'vida.tasks',
-    'registration'
+    'registration',
+    'tilebundler'
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
