@@ -191,6 +191,7 @@ class FileItemResource(Resource):
         # method check to avoid bad requests
         self.method_check(request, allowed=['get'])
         file_item = FileItemResource.get_file_item(kwargs)
+        response = None
         if file_item:
             # set content_type to '' so that content_type from nginx/apache is returned
             response = HttpResponse(content_type='')
@@ -201,6 +202,6 @@ class FileItemResource(Resource):
             response['X-Accel-Redirect'] = file_with_route
 
         if not response:
-            response = self.create_response(request, {'status': 'filename not specified'})
+            response = self.create_response(request, {'Status': 'File does not exist'})
         return response
 
