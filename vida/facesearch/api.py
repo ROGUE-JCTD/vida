@@ -5,7 +5,8 @@ from tastypie.bundle import Bundle
 from tastypie.resources import Resource
 from vida.fileservice.helpers import get_fileservice_files, get_filename_absolute
 from vida.vida.models import Person
-import brpy2
+# import brpy2  #switch to this import when brpy2 is up on the server
+from brpy import init_brpy
 
 import hashlib
 import os
@@ -18,7 +19,7 @@ class FaceSearch(object):
 
 class FaceSearchResource(Resource):
     name = fields.CharField(attribute='name')
-#    br = init_brpy()
+    br = init_brpy() # comment this out for brpy2
 
     class Meta:
         resource_name = 'facesearchservice'
