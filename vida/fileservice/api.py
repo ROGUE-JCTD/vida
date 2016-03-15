@@ -116,7 +116,6 @@ class FileItemResource(Resource):
             destination_file.write(file_data)
 
             # make thumbnail on server
-            THUMB_SIZE = (256, 256)
             try:
                 from PIL import ImageFile
                 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -124,6 +123,10 @@ class FileItemResource(Resource):
             except:
                 return False
 
+            # 40% the size of the original image
+            # (aspect ratio could still be off, could look into that)
+            original_width, original_height = image.size
+            THUMB_SIZE = (original_width * 0.4, original_height * 0.4)
             image.thumbnail(THUMB_SIZE, Image.ANTIALIAS)
 
             if file_extension in ['.jpg', '.jpeg']:

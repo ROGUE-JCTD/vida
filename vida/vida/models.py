@@ -172,7 +172,7 @@ class Person(models.Model):
         # if the private key is not null then the person exists, otherwise don't bother checking
         existing_person = bool(self.pk)
         # Put the current date/time in the updated_at field so we know when it was done
-        self.updated_at = datetime.datetime.now();
+        self.updated_at = datetime.datetime.now()
         # go ahead and save the changes
         super(Person, self).save(*args, **kwargs)  # Save the Person data to the DB
         # First, check if we have a new geometry, if so then store it in location history, which we do

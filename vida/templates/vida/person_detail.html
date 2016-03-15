@@ -243,171 +243,179 @@
                             <div class="ct-u-displayTableCell text-right">
                                 <span>{{ person.family_name|default:"" }}</span>
                             </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Fathers' Given Name</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.fathers_given_name|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Mothers' Given Name</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.mothers_given_name|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Nationality</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.nationality|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Address</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.street_and_number|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Age</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.age|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Phone Number</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.phone_number|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Barcode</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.barcode|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Created At</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right" style="width:100%">
-                                <span style="font-size: 12px">{{ person.created_at|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Created By</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.created_by|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">City</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.city|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Neighborhood</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.neighborhood|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Province/State</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.province_or_state|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Status</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.status|default:"" }}</span>
-                            </div>
-                        </div>
-                       <div class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                                <span class="ct-fw-600">Injury</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                                <span>{{ person.injury|default:"" }}</span>
-                            </div>
-                        </div>
-                        <div id="shelterID" ng-if="getShelterByUUID('{{ person.shelter_id }}') !== null" class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                              <span class="ct-fw-600">Current Shelter</span>
-                            </div>
-                            <div class="ct-u-displayTableCell text-right">
-                              <span>None</span>
-                            </div>
-                        </div>
-                        <div id="personHistory" class="ct-u-displayTableRow">
-                            <div class="ct-u-displayTableCell">
-                              <span class="ct-fw-600">Record History</span>
-                                <style>
-                                #history {
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Fathers' Given Name</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.fathers_given_name|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Mothers' Given Name</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.mothers_given_name|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Age</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.age|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Date of Birth</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.date_of_birth|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Address</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.street_and_number|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">City</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.city|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Neighborhood</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.neighborhood|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Nationality</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.nationality|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Status</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.status|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Injury</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.injury|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Description</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.description|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Phone Number</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.phone_number|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Barcode</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.barcode|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Created At</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right" style="width:100%">
+                              <span style="font-size: 12px">{{ person.created_at|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                              <span class="ct-fw-600">Created By</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                              <span>{{ person.created_by|default:"" }}</span>
+                          </div>
+                      </div>
+                      <div id="shelterID" ng-if="getShelterByUUID('{{ person.shelter_id }}') !== null" class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                            <span class="ct-fw-600">Current Shelter</span>
+                          </div>
+                          <div class="ct-u-displayTableCell text-right">
+                            <span>None</span>
+                          </div>
+                      </div>
+                      <div id="personHistory" class="ct-u-displayTableRow">
+                          <div class="ct-u-displayTableCell">
+                            <span class="ct-fw-600">Record History</span>
+                              <style>
+                              #history {
 
-                                }
-                                #history table,#history th,#history td {
-                                  border-collapse: collapse;
-                                  border: 1px solid gray;
-                                  padding-left: 2px;
-                                  padding-right: 2px;
-                                }
-                                #history .tr_body:hover {
-                                  background-color: #f5f5f5
-                                }
-                                #history th, #history td {
-                                  padding-left: 15px;
-                                  padding-right: 15px;
-                                }
-                                #history th {
-                                  text-align: center;
-                                }
-                                </style>
-                                <table id="history">
-                                    <tr >
-                                        <th>Field</th><th>Old Value</th><th>New Value</th><th>Change Date</th><th>Changed By</th>
-                                    </tr>
-                                    {% for change in person.personfieldhistory_set.all %}
-                                        <tr class="tr_body">
-                                        <td>{{ change.field_name }}</td>
-                                            {% if change.field_name == "pic_filename" %}
-                                              <td><a href="/api/v1/fileservice/{{ change.old_value }}/view">{{ change.old_value }}</a></td>
-                                              <td><a href="/api/v1/fileservice/{{ change.new_value }}/view">{{ change.new_value }}</a></td>
-                                            {% else %}
-                                              <td>{{ change.old_value }}</td>
-                                              <td>{{ change.new_value }}</td>
-                                            {% endif %}
-                                            <td>{{ change.date_of_change }} </td>
-                                            <td>{{ change.changed_by }} </td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                            </div>
+                              }
+                              #history table,#history th,#history td {
+                                border-collapse: collapse;
+                                border: 1px solid gray;
+                                padding-left: 2px;
+                                padding-right: 2px;
+                              }
+                              #history .tr_body:hover {
+                                background-color: #f5f5f5
+                              }
+                              #history th, #history td {
+                                padding-left: 15px;
+                                padding-right: 15px;
+                              }
+                              #history th {
+                                text-align: center;
+                              }
+                              </style>
+                              <table id="history">
+                                  <tr >
+                                      <th>Field</th><th>Old Value</th><th>New Value</th><th>Change Date</th><th>Changed By</th>
+                                  </tr>
+                                  {% for change in person.personfieldhistory_set.all %}
+                                      <tr class="tr_body">
+                                      <td>{{ change.field_name }}</td>
+                                          {% if change.field_name == "pic_filename" %}
+                                            <td><a href="/api/v1/fileservice/{{ change.old_value }}/view">{{ change.old_value }}</a></td>
+                                            <td><a href="/api/v1/fileservice/{{ change.new_value }}/view">{{ change.new_value }}</a></td>
+                                          {% else %}
+                                            <td>{{ change.old_value }}</td>
+                                            <td>{{ change.new_value }}</td>
+                                          {% endif %}
+                                          <td>{{ change.date_of_change }} </td>
+                                          <td>{{ change.changed_by }} </td>
+                                      </tr>
+                                  {% endfor %}
+                              </table>
+                          </div>
                         </div>
                     </div>
                 </div>
