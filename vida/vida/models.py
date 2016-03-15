@@ -3,8 +3,10 @@ from django.contrib.gis.db import models
 from django.db.models.signals import post_init
 from django.contrib.gis.geos import (Point, GEOSGeometry)
 import helpers
+import logging
 import datetime
 
+logger = logging.getLogger(__name__)
 
 class Shelter(models.Model):
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
@@ -159,6 +161,12 @@ class Person(models.Model):
                 new_record.save()
 
     def save(self, *args, **kwargs):
+        logger.debug("vida person.save with args")
+        logger.debug(self.created_by)
+        logger.debug(self.created_by_id)
+        # check the args.  While the admin interface sends the user ID for the creator, the mobile app is giving us
+        # the username.  So we have to detect which it is.  Note that we cannot accept NULL/no value for create_by
+
         # Customized the save method to update change history
         # if the private key is not null then the person exists, otherwise don't bother checking
         existing_person = bool(self.pk)
