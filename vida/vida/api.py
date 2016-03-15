@@ -11,9 +11,12 @@ import os
 import requests, json
 import uuid
 
+
 from vida.vida.models import Person
 from vida.vida.models import Shelter
 
+import logging
+logger = logging.getLogger(__name__)
 
 
 class UserResource(ModelResource):
@@ -199,6 +202,12 @@ class PersonResource(ModelResource):
     def hydrate(self, bundle):
         bundle.obj.created_by = bundle.request.user
         return bundle
+
+    def obj_create(self, bundle, request=None, **kwargs):
+        logger.debug("PersonResource.obj_create")
+        logger.debug(bundle)
+        logger.debug(kwargs)
+        return super(PersonResource, self).obj_create(bundle, request=request, **kwargs)
 
 
 class ShelterResource(ModelResource):

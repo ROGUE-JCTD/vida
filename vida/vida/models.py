@@ -162,6 +162,7 @@ class Person(models.Model):
 
     def save(self, *args, **kwargs):
         logger.debug("vida person.save with args")
+        logger.debug(args)
         logger.debug(self.created_by)
         logger.debug(self.created_by_id)
         # check the args.  While the admin interface sends the user ID for the creator, the mobile app is giving us
