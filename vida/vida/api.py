@@ -170,7 +170,7 @@ class PersonResource(ModelResource):
         return response
 
 
-    def build_filters(self, filters=None):
+    def build_filters(self, filters=None, ignore_bad_filters=False):
         """Allow for building of custom filters based on url keyword."""
         custom_filters = self._meta.custom_filters
         custom_queries = {}

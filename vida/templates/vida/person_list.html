@@ -253,7 +253,7 @@
     <div class="ct-sortingTitle pull-left">
         <h4 class="text-uppercase">Search Results<span> ({{ object_list.count }})</span></h4>
     </div>
-    <ul class="list-inline list-unstyled pull-right ct-u-paddingBoth15">
+    <ul class="list-unstyled list-inline pull-right ct-u-paddingBoth15">
         <li>
             <form>
                 <ui-select theme="select2" name="sortBy"  id="sort-select" ng-model="params.sortBy" ng-change="search()">
@@ -276,12 +276,12 @@
         </li>
     </ul>
     <ul class="ct-showPages list-inline list-unstyled pull-right ct-u-paddingBoth15">
-        <li class="ct-showElements is-active" id="ct-js-showTiles">
+        <li class="ct-showElements" id="ct-js-showTiles">
             <a href="#">
                 <i class="fa fa-th fa-fw"></i>
             </a>
         </li>
-        <li class="ct-showElements" id="ct-js-showList">
+        <li class="ct-showElements is-active" id="ct-js-showList">
             <a href="#">
                 <i class="fa fa-th-list fa-fw"></i>
             </a>
@@ -289,7 +289,7 @@
     </ul>
     <div class="clearfix"></div>
 </div>
-<div class="row ct-js-search-results ct-showProducts--default">
+<div class="row ct-js-search-results ct-showProducts--list">
 
 {% for person in person_list %}
     <div class="col-sm-6 col-md-6 col-lg-4">
