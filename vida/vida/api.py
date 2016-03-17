@@ -27,7 +27,7 @@ class UserResource(ModelResource):
 
 
 class PersonResource(ModelResource):
-    created_by = fields.ToOneField(UserResource, 'created_by',  full=True, blank=True, null=True)
+    created_by = fields.ToOneField(UserResource, 'created_by',  full=True, blank=False, null=False)
 
     class Meta:
         def filter_custom_query(url_args):
@@ -204,9 +204,9 @@ class PersonResource(ModelResource):
         return bundle
 
     def obj_create(self, bundle, request=None, **kwargs):
-        logger.debug("PersonResource.obj_create")
-        logger.debug(bundle)
-        logger.debug(kwargs)
+        self.created_by = bundle.request.user
+        logger.debug(self)
+
         return super(PersonResource, self).obj_create(bundle, request=request, **kwargs)
 
 
