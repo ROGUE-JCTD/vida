@@ -6,14 +6,13 @@ from tastypie.resources import Resource
 from vida.fileservice.helpers import get_fileservice_files, get_filename_absolute
 from vida.vida.models import Person
 import os
-print os.environ
 import brpy2
 
-
 import hashlib
-import os
 import tempfile
-
+from . import tasks
+import logging
+logger = logging.getLogger(__name__)
 
 class FaceSearch(object):
     name = ''
@@ -56,10 +55,12 @@ class FaceSearchResource(Resource):
             return {'name': bundle_or_obj.name}
 
     def obj_create(self, bundle, request=None, **kwargs):
-        # TODO: Need a one-time init somewhere
-        self.br.br_initialize_default()
-        self.br.br_set_property('algorithm', 'FaceRecognition')
-        self.br.br_set_property('enrollAll', 'true')
+        logger.debug("Performing face search")
+        # TODO: Need a one-time init somewhere, initialize the gallery and index existing pics
+        gallery = tasks.reindex_files()
+        logger.debug(gallery)
+        brpy2.setAlgorithm('FaceRecognition')
+        brpy2.setGlobal('enrollAll', 'true')
 
         # create a new File
         bundle.obj = FaceSearch()
@@ -73,12 +74,10 @@ class FaceSearchResource(Resource):
         destination_file = tempfile.NamedTemporaryFile(suffix=file_extension)
         destination_file.write(file_data)
 
-        # OpenBR shizzy
-        facetmpl = self.br.br_load_img(file_data, len(file_data))
+        facetmpl = [brpy2.Template(file_data)]
         query = self.br.br_enroll_template(facetmpl)
         nqueries = self.br.br_num_templates(query)
 
-        # More OpenBR shizzy
         scores = []
         for imgpath in get_fileservice_files():
             # load and enroll image from URL
@@ -103,7 +102,7 @@ class FaceSearchResource(Resource):
         destination_file.close()
 
         # TODO: Ensure this is a one-time event along with br_initialize_default()
-        self.br.br_finalize()
+        brpy2.finalize()
 
         peeps = Person.objects.filter(pic_filename__in=dict(scores).keys()).values()
 
