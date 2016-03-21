@@ -112,7 +112,7 @@ class PersonResource(ModelResource):
             person_index = 0
             for file in files:
                 with open('/vida/samples/photos/' + file, 'rb') as f:
-                    url = helpers.get_network_ip('eth1')
+                    url = helpers.get_network_ip()
                     response = requests.post('http://' + url + '/api/v1/fileservice/', files={'file': f}, auth=('admin', 'admin'))
                     if (response.status_code == 201):
                         # Picture successfully uploaded

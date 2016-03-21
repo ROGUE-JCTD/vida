@@ -33,7 +33,7 @@ class ShelterAdmin(admin.GeoModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.uuid = str(uuid.uuid4()).decode('unicode-escape') # Make new uuid for shelter
-        obj.site_details = str('http://' + helpers.get_network_ip('eth1') + '/shelters/')
+        obj.site_details = str('http://' + helpers.get_network_ip() + '/shelters/')
         return super(ShelterAdmin, self).save_model(request, obj, form, change)
 
     def response_post_save_add(self, request, obj):
