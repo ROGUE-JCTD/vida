@@ -158,18 +158,18 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.gis',
     'django.contrib.humanize',
+    'registration',
     'vida.vida_core',
     'vida.firestation',
-    'vida.facesearch',
     'vida.vida',
     'vida.usgs',
     'vida.fileservice',
+    'vida.facesearch',
     'jsonfield',
     'compressor',
     'storages',
     'widget_tweaks',
     'vida.tasks',
-    'registration',
     'tilebundler'
 )
 
