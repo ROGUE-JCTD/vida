@@ -15,8 +15,14 @@ class PersonAdmin(admin.GeoModelAdmin):
     default_zoom = 12
 
     def save_model(self, request, obj, form, change):
-        obj.uuid = str(uuid.uuid4()).decode('unicode-escape') # Make new uuid for person (important for version-ing)
+        obj.uuid = str(uuid.uuid4()).decode('unicode-escape') # Make new uuid for person (important for versioning)
+        obj.site_details = str('http://' + helpers.get_network_ip() + '/persons/')
         return super(PersonAdmin, self).save_model(request, obj, form, change)
+
+    def response_post_save_add(self, request, obj):
+        obj.site_details += str(obj.id) + '/'
+        obj.save() # This adds the ID after the save, because Django doesn't have the ID field before creation
+        return super(PersonAdmin, self).response_post_save_add(request, obj)
 
 admin.site.register(Person, PersonAdmin)
 
@@ -33,7 +39,7 @@ class ShelterAdmin(admin.GeoModelAdmin):
 
     def save_model(self, request, obj, form, change):
         obj.uuid = str(uuid.uuid4()).decode('unicode-escape') # Make new uuid for shelter
-        obj.site_details = str('http://' + helpers.get_network_ip('eth1') + '/shelters/')
+        obj.site_details = str('http://' + helpers.get_network_ip() + '/shelters/')
         return super(ShelterAdmin, self).save_model(request, obj, form, change)
 
     def response_post_save_add(self, request, obj):
