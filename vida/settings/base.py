@@ -201,13 +201,13 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/webapps/vida/logs/vida.log',
+            'filename': '/tmp/vida.log',
             'formatter': 'verbose'
         },
         'django': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/webapps/vida/logs/django_vida.log',
+            'filename': '/tmp/django_vida.log',
             'formatter': 'verbose'
         },
 
