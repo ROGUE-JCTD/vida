@@ -80,9 +80,8 @@ class FaceSearchResource(Resource):
             scores = []
             file_names = get_fileservice_files()
             for currFile in file_names:
-#                # TODO: if the file is *_thumb.jpg then it is a thumbnail, don't index
                 if 'thumb' in currFile:
-                    break
+                    continue
                 print ("Comparing " + currFile)
                 _name, _extension = os.path.splitext(currFile)
                 img = open(get_filename_absolute(currFile), 'rb').read()
@@ -118,6 +117,7 @@ class FaceSearchResource(Resource):
         scores.sort(key=lambda s: s[1], reverse=True)
         # TODO: Make 15 a parameter - right now we return the top 15 results
         for s in scores[:15]:
+            print s[0]
             sorted_peeps.append(filter(lambda p: p['pic_filename'] == s[0], peeps)[0])
 
         # bundle the search results
