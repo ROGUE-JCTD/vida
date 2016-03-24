@@ -143,6 +143,7 @@ class PersonResource(ModelResource):
                                     break
 
                         # Get person information
+                        print "Setting up person info"
                         uploadJSON = '{"given_name":"' + _personDB[person_index]['given_name'] + '", "street_and_number":"' + _personDB[person_index]['street_and_number'] + '",'
                         uploadJSON += '"family_name":"' + _personDB[person_index]['family_name'] + '", "gender":"' + _personDB[person_index]['gender'] + '", '
                         if 'fathers_given_name' in _personDB[person_index]:
@@ -205,8 +206,6 @@ class PersonResource(ModelResource):
 
     def obj_create(self, bundle, request=None, **kwargs):
         self.created_by = bundle.request.user
-        logger.debug(self)
-
         return super(PersonResource, self).obj_create(bundle, request=request, **kwargs)
 
 

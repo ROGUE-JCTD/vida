@@ -5,12 +5,13 @@ from tastypie.bundle import Bundle
 from tastypie.resources import Resource
 from vida.fileservice.helpers import get_fileservice_files, get_filename_absolute
 from vida.vida.models import Person
+from brpy import init_brpy
 import os
-import brpy2
+import sys
 
 import hashlib
 import tempfile
-from . import tasks
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,7 @@ class FaceSearch(object):
 
 class FaceSearchResource(Resource):
     name = fields.CharField(attribute='name')
-
+    br = init_brpy()
     class Meta:
         resource_name = 'facesearchservice'
         object_class = FaceSearch
@@ -55,54 +56,60 @@ class FaceSearchResource(Resource):
             return {'name': bundle_or_obj.name}
 
     def obj_create(self, bundle, request=None, **kwargs):
-        logger.debug("Performing face search")
-        # TODO: Need a one-time init somewhere, initialize the gallery and index existing pics
-        gallery = tasks.reindex_files()
-        logger.debug(gallery)
-        brpy2.setAlgorithm('FaceRecognition')
-        brpy2.setGlobal('enrollAll', 'true')
-
         # create a new File
+        print "running face search"
         bundle.obj = FaceSearch()
         # full_hydrate does the heavy lifting mapping the
         # POST-ed payload key/values to object attribute/values
         bundle = self.full_hydrate(bundle)
         file_data = bundle.data[u'file'].read()
-
-        # write the file data to a temporary file
+        # write the file data to a temporary file TODO: can we load directly from the file stream?  Ask Jordan
         filename_name, file_extension = os.path.splitext(bundle.data[u'file'].name)
         destination_file = tempfile.NamedTemporaryFile(suffix=file_extension)
-        destination_file.write(file_data)
+        destination_file.write(bytearray(file_data))
+        destination_file.flush()
+        os.fsync(destination_file) # Need this, we were not getting all bytes written to file before proceeding
+        logger.debug("Wrote temporary file " + destination_file.name)
+        try:
+            self.br.br_initialize_default()
+            self.br.br_set_property('algorithm', 'FaceRecognition')
+            self.br.br_set_property('enrollAll', 'true')
+            facetmpl = self.br.br_load_img(file_data, len(file_data))
+            query = self.br.br_enroll_template(facetmpl)
+            nqueries = self.br.br_num_templates(query)
+            scores = []
+            file_names = get_fileservice_files()
+            for currFile in file_names:
+#                # TODO: if the file is *_thumb.jpg then it is a thumbnail, don't index
+                if 'thumb' in currFile:
+                    break
+                print ("Comparing " + currFile)
+                _name, _extension = os.path.splitext(currFile)
+                img = open(get_filename_absolute(currFile), 'rb').read()
+                tmpl = self.br.br_load_img(img, len(img))
+                targets = self.br.br_enroll_template(tmpl)
+                ntargets = self.br.br_num_templates(targets)
+                # compare and collect scores
+                scoresmat = self.br.br_compare_template_lists(targets, query)
+                for r in range(ntargets):
+                    for c in range(nqueries):
+                        # This is not a percentage match, it's a relative score
+                        similarity = self.br.br_get_matrix_output_at(scoresmat, r, c)
+                        scores.append(('{}{}'.format(hashlib.sha1(img).hexdigest(), _extension), similarity))
 
-        facetmpl = [brpy2.Template(file_data)]
-        query = self.br.br_enroll_template(facetmpl)
-        nqueries = self.br.br_num_templates(query)
-
-        scores = []
-        for imgpath in get_fileservice_files():
-            # load and enroll image from URL
-            _name, _extension = os.path.splitext(imgpath)
-            img = open(get_filename_absolute(imgpath), 'rb').read()
-            tmpl = self.br.br_load_img(img, len(img))
-            targets = self.br.br_enroll_template(tmpl)
-            ntargets = self.br.br_num_templates(targets)
-
-            # compare and collect scores
-            scoresmat = self.br.br_compare_template_lists(targets, query)
-            for r in range(ntargets):
-                for c in range(nqueries):
-                    # This is not a percentage match, it's a relative score
-                    similarity = self.br.br_get_matrix_output_at(scoresmat, r, c)
-                    scores.append(('{}{}'.format(hashlib.sha1(img).hexdigest(), _extension), similarity))
-
-            # clean up - no memory leaks
-            self.br.br_free_template(tmpl)
-            self.br.br_free_template_list(targets)
+                # clean up - no memory leaks
+                self.br.br_free_template(tmpl)
+                self.br.br_free_template_list(targets)
+        except:
+            logger.error("Unexpected error ")
+            logger.error(sys.exc_info()[0])
+            print ("Unexpected error ")
+            print(sys.exc_info()[0])
+            raise
 
         destination_file.close()
-
-        # TODO: Ensure this is a one-time event along with br_initialize_default()
-        brpy2.finalize()
+        self.br.br_free_template(facetmpl)
+        self.br.br_finalize()
 
         peeps = Person.objects.filter(pic_filename__in=dict(scores).keys()).values()
 
