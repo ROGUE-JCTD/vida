@@ -8,6 +8,7 @@ from django.views.static import serve
 from django.utils.encoding import smart_str
 from django.http import HttpResponse
 from tastypie import fields
+from vida.facesearch.models import ImageTemplate
 import helpers
 import os
 import hashlib
@@ -117,35 +118,37 @@ class FileItemResource(Resource):
         else:
             filename = file_sha1
         bundle.obj.name = filename
+
+        # add entry to the facesearch.ImageTemplate
+        # image_template should be passed the openbr template instad of binary data of the image itself
+        image_template, created = ImageTemplate.objects.get_or_create(
+            filename=filename,
+            image_template=file_data)
+
+        if created:
+            print 'added new image template'
+        else:
+            print 'already had same image template'
+
+
         with open(helpers.get_filename_absolute(filename), 'wb+') as destination_file:
             destination_file.write(file_data)
 
             # make thumbnail on server
-            try:
-                from PIL import ImageFile
-                ImageFile.LOAD_TRUNCATED_IMAGES = True
-                image = Image.open(destination_file.name)
-            except:
-                return False
+            from PIL import ImageFile
+            ImageFile.LOAD_TRUNCATED_IMAGES = True
+            image = Image.open(destination_file.name)
 
             # 40% the size of the original image
             # (aspect ratio could still be off, could look into that)
             original_width, original_height = image.size
             THUMB_SIZE = (original_width * 0.4, original_height * 0.4)
             image.thumbnail(THUMB_SIZE, Image.ANTIALIAS)
-
-            if file_extension in ['.jpg', '.jpeg']:
-                FTYPE = 'JPEG'
-            elif file_extension == '.gif':
-                FTYPE = 'GIF'
-            elif file_extension == '.png':
-                FTYPE = 'PNG'
-            else:
-                return False    # Unrecognized file type
-
-            # Save thumbnail to in-memory file
             file_thumbnail_name = helpers.get_fileservice_dir() + "/" + file_sha1 + "_thumb" + file_extension
-            image.save(file_thumbnail_name, FTYPE)
+            image_type = file_extension[1:]
+            if image_type.lower() == 'jpg':
+                image_type = 'jpeg'
+            image.save(file_thumbnail_name, image_type)
 
         # index the file in openbr
         if u'index' not in bundle.data or 'false' != bundle.data[u'index']:
