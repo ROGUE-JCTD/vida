@@ -1,3 +1,5 @@
+from django.conf.urls import url
+from tastypie.utils import trailing_slash
 from tastypie import fields
 from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
@@ -52,6 +54,36 @@ class FaceSearchResource(Resource):
             return {'name': bundle_or_obj.obj.name}
         else:
             return {'name': bundle_or_obj.name}
+
+    def prepend_urls(self):
+        """ Add the following array of urls to the Tileset base urls """
+        return [
+            url(r"^(?P<resource_name>%s)/test_getfilename%s$" %
+                (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('test_getfilename'), name="test_getfilename"),
+        ]
+
+    # This function is a REST end-point to perform a simple test of br_get_filename, which is giving us a problem
+    # Make sure to have a picture /tmp/testimage1.jpg
+    def test_getfilename(self, request, **kwargs):
+        self.method_check(request, allowed=['post'])
+        res = []
+        self.br.br_initialize_default()
+        self.br.br_set_property('algorithm', 'FaceRecognition')
+        self.br.br_set_property('enrollAll', 'true')
+
+        # create a new File
+        filename_name = '/tmp/testimage1.jpg'
+        file_data = open(filename_name, 'rb').read()
+
+        facetmpl = self.br.br_load_img(file_data, len(file_data))
+        print "Setting file name on template to " + os.path.basename(filename_name)
+        self.br.br_set_filename(facetmpl, os.path.basename(filename_name))
+        print "Retrieving file name from template"
+        filename = self.br.br_get_filename(facetmpl)
+        print filename
+        response = self.create_response(request, res)
+        return response
 
     def obj_create(self, bundle, request=None, **kwargs):
         # TODO: Need a one-time init somewhere
