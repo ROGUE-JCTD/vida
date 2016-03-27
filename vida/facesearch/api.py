@@ -10,6 +10,7 @@ from brpy import init_brpy
 import hashlib
 import os
 import tempfile
+import datetime
 
 
 class FaceSearch(object):
@@ -86,8 +87,12 @@ class FaceSearchResource(Resource):
             print "Comparing to file " + imgpath
             _name, _extension = os.path.splitext(imgpath)
             img = open(get_filename_absolute(imgpath), 'rb').read()
+            time_begin = datetime.datetime.now()
             tmpl = self.br.br_load_img(img, len(img))
+            print '----[ delta br_load_img: ', datetime.datetime.now() - time_begin
+            time_begin = datetime.datetime.now()
             targets = self.br.br_enroll_template(tmpl)
+            print '----[ delta br_enroll_template: ', datetime.datetime.now() - time_begin
             ntargets = self.br.br_num_templates(targets)
 
             # compare and collect scores
