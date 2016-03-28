@@ -3,7 +3,7 @@
 from brpy import init_brpy
 import os
 
-br = init_brpy()
+# br = init_brpy()
 br.br_initialize_default()
 br.br_set_property('algorithm', 'FaceRecognition')
 br.br_set_property('enrollAll', 'True')
@@ -17,5 +17,7 @@ print "Setting file name on template to " + os.path.basename(imgfilename)
 br.br_set_filename(template, os.path.basename(imgfilename))
 print "Retrieving file name from template"
 filename = br.br_get_filename(template)
+metadata= br.br_get_metadata_string(template, 0)
 print filename
+print metadata
 print "Done!"

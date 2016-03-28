@@ -5,13 +5,17 @@ from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
 from tastypie.resources import Resource
-from vida.fileservice.helpers import get_fileservice_files, get_filename_absolute
+from vida.fileservice.helpers import get_fileservice_files, get_filename_absolute, get_gallery_file
 from vida.vida.models import Person
-from brpy import init_brpy
+from vida import br
+from helpers import reindex_gallery
 
 import hashlib
 import os
 import tempfile
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 class FaceSearch(object):
@@ -20,7 +24,6 @@ class FaceSearch(object):
 
 class FaceSearchResource(Resource):
     name = fields.CharField(attribute='name')
-    br = init_brpy()
 
     class Meta:
         resource_name = 'facesearchservice'
@@ -61,6 +64,9 @@ class FaceSearchResource(Resource):
             url(r"^(?P<resource_name>%s)/test_getfilename%s$" %
                 (self._meta.resource_name, trailing_slash()),
                 self.wrap_view('test_getfilename'), name="test_getfilename"),
+            url(r"^(?P<resource_name>%s)/reload_gallery%s$" %
+                (self._meta.resource_name, trailing_slash()),
+                self.wrap_view('reload_gallery'), name="reload_gallery"),
         ]
 
     # This function is a REST end-point to perform a simple test of br_get_filename, which is giving us a problem
@@ -68,29 +74,42 @@ class FaceSearchResource(Resource):
     def test_getfilename(self, request, **kwargs):
         self.method_check(request, allowed=['post'])
         res = []
-        self.br.br_initialize_default()
-        self.br.br_set_property('algorithm', 'FaceRecognition')
-        self.br.br_set_property('enrollAll', 'true')
 
         # create a new File
-        filename_name = '/tmp/testimage1.jpg'
+        filename_name = u'/tmp/testimage1.jpg'
         file_data = open(filename_name, 'rb').read()
 
-        facetmpl = self.br.br_load_img(file_data, len(file_data))
+        facetmpl = br.br_load_img(file_data, len(file_data))
         print "Setting file name on template to " + os.path.basename(filename_name)
-        self.br.br_set_filename(facetmpl, os.path.basename(filename_name))
+        logger.debug("Setting file name on template to " + os.path.basename(filename_name))
+        br.br_set_filename(facetmpl, os.path.basename(filename_name))
         print "Retrieving file name from template"
-        filename = self.br.br_get_filename(facetmpl)
+        logger.debug("Retriving file name from template")
+        filename = br.br_get_filename(facetmpl)
+        logger.debug("Filename=" + filename)
         print filename
         response = self.create_response(request, res)
         return response
 
-    def obj_create(self, bundle, request=None, **kwargs):
-        # TODO: Need a one-time init somewhere
-        self.br.br_initialize_default()
-        self.br.br_set_property('algorithm', 'FaceRecognition')
-        self.br.br_set_property('enrollAll', 'true')
+    def reload_gallery(self, request, **kwargs):
+        reindex_gallery()
+        galleryGalPath = get_gallery_file()
+        galGallery = br.br_make_gallery(galleryGalPath)
+        galTemplateList = br.br_load_from_gallery(galGallery)
 
+        # compare and collect scores
+        ntargets = br.br_num_templates(galTemplateList)
+        logger.debug(str(ntargets) + " templates found in the gallery at " + galleryGalPath)
+        res = str(ntargets) + " templates found in the gallery at " + galleryGalPath
+        for r in range(ntargets):
+            tmpl = br.br_get_template(galTemplateList, r)
+            logger.debug("Filename = " + br.br_get_filename(tmpl))
+        response = self.create_response(request, res)
+        br.br_free_template_list(galTemplateList)
+        br.br_close_gallery(galGallery)
+        return response
+
+    def obj_create(self, bundle, request=None, **kwargs):
         # create a new File
         bundle.obj = FaceSearch()
         # full_hydrate does the heavy lifting mapping the
@@ -105,40 +124,39 @@ class FaceSearchResource(Resource):
         destination_file.flush()
         os.fsync(destination_file) # Need this, we were not getting all bytes written to file before proceeding
 
-        facetmpl = self.br.br_load_img(file_data, len(file_data))
-        query = self.br.br_enroll_template(facetmpl)
-        nqueries = self.br.br_num_templates(query)
+        facetmpl = br.br_load_img(file_data, len(file_data))
+        query = br.br_enroll_template(facetmpl)
+        nqueries = br.br_num_templates(query)
+        logger.debug("Templates found in query pic: " + str(nqueries))
+        galleryGalPath = get_gallery_file()
+        galGallery = br.br_make_gallery(galleryGalPath)
+        galTemplateList = br.br_load_from_gallery(galGallery)
+
+        # compare and collect scores
+        ntargets = br.br_num_templates(galTemplateList)
+        logger.debug("Templates found in gallery: " + str(ntargets))
+        scoresmat = br.br_compare_template_lists(galTemplateList, query)
 
         scores = []
-        for imgpath in get_fileservice_files():
-            # don't check thumbnails
-            if 'thumb' in imgpath:
-                continue
-            # load and enroll image from URL
-            print "Comparing to file " + imgpath
-            _name, _extension = os.path.splitext(imgpath)
-            img = open(get_filename_absolute(imgpath), 'rb').read()
-            tmpl = self.br.br_load_img(img, len(img))
-            targets = self.br.br_enroll_template(tmpl)
-            ntargets = self.br.br_num_templates(targets)
-
-            # compare and collect scores
-            scoresmat = self.br.br_compare_template_lists(targets, query)
-            for r in range(ntargets):
-                for c in range(nqueries):
-                    # This is not a percentage match, it's a relative score
-                    similarity = self.br.br_get_matrix_output_at(scoresmat, r, c)
-                    scores.append(('{}{}'.format(hashlib.sha1(img).hexdigest(), _extension), similarity))
-
-            # clean up - no memory leaks
-            self.br.br_free_template(tmpl)
-            self.br.br_free_template_list(targets)
+        logger.debug("Appending scores")
+        for r in range(ntargets):
+            for c in range(nqueries):
+                logger.debug(str(r) + ',' + str(c))
+                # This is not a percentage match, it's a relative score
+                similarity = br.br_get_matrix_output_at(scoresmat, r, c)
+                logger.debug("\tsimilarity = " + str(similarity))
+                tmpl = br.br_get_template(galTemplateList, r)
+                logger.debug("Getting filename")
+                imgFileName = br.br_get_filename(tmpl)
+                logger.debug("\t" + imgFileName)
+                scores.append((os.path.basename(imgFileName), similarity))
 
         destination_file.close()
-        self.br.br_free_template(facetmpl)
-        self.br.br_free_template_list(query)
-        # TODO: Ensure this is a one-time event along with br_initialize_default()
-        self.br.br_finalize()
+        br.br_free_template(facetmpl)
+        br.br_free_template_list(query)
+        br.br_free_template_list(galTemplateList)
+        br.br_close_gallery(galGallery)
+
 
         peeps = Person.objects.filter(pic_filename__in=dict(scores).keys()).values()
 
@@ -146,9 +164,14 @@ class FaceSearchResource(Resource):
 
         scores.sort(key=lambda s: s[1], reverse=True)
         # TODO: Make 15 a parameter - right now we return the top 15 results
+        logger.debug("Building result package")
         for s in scores[:15]:
+            currfilename = s[0]
             print s
-            sorted_peeps.append(filter(lambda p: p['pic_filename'] == s[0], peeps)[0])
+            logger.debug(currfilename)
+            foundPeep = filter(lambda p: p['pic_filename'] == os.path.basename(s[0]), peeps)
+            logger.debug(foundPeep)
+            sorted_peeps.append(foundPeep[0])
 
         # bundle the search results
         bundle.obj.name = bundle.data[u'file'].name
