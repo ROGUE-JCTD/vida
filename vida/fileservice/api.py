@@ -9,6 +9,7 @@ from django.utils.encoding import smart_str
 from django.http import HttpResponse
 from tastypie import fields
 from vida.facesearch.models import ImageTemplate
+from vida import br
 import helpers
 import os
 import hashlib
@@ -18,7 +19,7 @@ from cStringIO import StringIO
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage as storage
 from PIL import Image
-from vida.facesearch.tasks import index_face
+from vida.facesearch.helpers import index_face
 
 import logging
 logger = logging.getLogger(__name__)
@@ -121,6 +122,7 @@ class FileItemResource(Resource):
 
         # add entry to the facesearch.ImageTemplate
         # image_template should be passed the openbr template instad of binary data of the image itself
+        tmpl = br.br_load_img(file_data, len(file_data))
         image_template, created = ImageTemplate.objects.get_or_create(
             filename=filename,
             image_template=file_data)
@@ -130,9 +132,11 @@ class FileItemResource(Resource):
         else:
             print 'already had same image template'
 
-
+        fn = helpers.get_filename_absolute(filename)
         with open(helpers.get_filename_absolute(filename), 'wb+') as destination_file:
             destination_file.write(file_data)
+            destination_file.flush()
+            os.fsync(destination_file)
 
             # make thumbnail on server
             from PIL import ImageFile
