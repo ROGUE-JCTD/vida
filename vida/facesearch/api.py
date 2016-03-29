@@ -13,6 +13,7 @@ from helpers import reindex_gallery
 import hashlib
 import os
 import tempfile
+import datetime
 
 import logging
 logger = logging.getLogger(__name__)
@@ -156,7 +157,6 @@ class FaceSearchResource(Resource):
         br.br_free_template_list(query)
         br.br_free_template_list(galTemplateList)
         br.br_close_gallery(galGallery)
-
 
         peeps = Person.objects.filter(pic_filename__in=dict(scores).keys()).values()
 
