@@ -90,6 +90,7 @@ class Person(models.Model):
 
     # this will be a uuid of each person so it can be later referenced for version-ing
     uuid = models.CharField(blank=False, max_length=100, default='None')
+    site_details = models.CharField(blank=True, max_length=200)
 
     notes = models.TextField(blank=True)
 
@@ -170,7 +171,12 @@ class Person(models.Model):
         existing_person = bool(self.pk)
         # Put the current date/time in the updated_at field so we know when it was done
         self.updated_at = datetime.datetime.now()
+        # Add site_details to person
+        self.site_details = str('http://' + helpers.get_network_ip() + '/persons/')
         # go ahead and save the changes
+        super(Person, self).save(*args, **kwargs)  # Save the Person data to the DB
+        # Finish site_details (ID was added after save)
+        self.site_details += str(self.id) + '/'
         super(Person, self).save(*args, **kwargs)  # Save the Person data to the DB
         # First, check if we have a new geometry, if so then store it in location history, which we do
         # if the record is new or updated
