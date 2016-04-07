@@ -206,8 +206,12 @@
             <a href="#partners" class="text-uppercase">partners</a>
         </span>
         <span class="pull-right">
-            <a href="{% url 'registration_register' %}" class="text-uppercase">sign up</a>
-            <a href="{% url 'login' %}?next={% url 'persons_list' %}" class="text-uppercase">login</a>
+            <!--<a href="{% url 'registration_register' %}" class="text-uppercase">sign up</a>-->
+          {% if request.user.is_anonymous %}
+            <a href="{% url 'login' %}?next={% url 'persons_list' %}" class="text-uppercase">Login</a>
+          {% else %}
+            <a href="{% url 'logout' %}?next={% url 'persons_list' %}"class="text-uppercase">Logout</a>
+          {% endif %}
         </span>
     </div>
 </section>

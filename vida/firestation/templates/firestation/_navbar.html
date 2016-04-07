@@ -4,7 +4,7 @@
             <div class="col-sm-12 col-md-12">
                 <div class="ct-panel--user ct-panel--right text-right">
                     <div class="ct-panel--item search-wrapper">
-                        <form id="slide" role="form" method="get" action="{% url 'firedepartment_list' %}/">
+                        <form id="slide" role="form" method="get" action="{% url 'persons_list' %}">
                         <i class="fa fa-search"></i>
                         <input placeholder="Search" name="q" type="text" class="form-control input-lg ct-input--search">
                          <button type="submit" style="display: none"></button>
@@ -17,11 +17,11 @@
                             <a href="{% url 'logout' %}"><i class="fa fa-user"></i> Logout</a>
                         {% endif %}
                     </div>
-                    <div class="ct-panel--item ct-email">
+                    <!--<div class="ct-panel--item ct-email">
                         {% if request.user.is_anonymous %}
                             <a href="{% url 'registration_register' %}"><i class="fa fa-plus-square"></i> Register</a>
                         {% endif %}
-                    </div>
+                    </div>-->
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
             <ul class="nav navbar-nav ct-navbar--fadeInUp">
                 <li class="onepage"><a href="{% url 'firestation_home' %}#about">About</a></li>
                 <li class="onepage"><a href="{% url 'firestation_home' %}#partners">Partners</a></li>
-                <li class="onepage active"><a href="{% url 'firedepartment_list' %}">Search</a></li>
+                <li class="onepage active"><a href="{% url 'persons_list' %}">Search</a></li>
             </ul>
         </div>
         <div class="clearfix"></div>

@@ -185,7 +185,7 @@
                     </span>
                 </div>
                 <div class="ct-u-displayTableCell text-right">
-                    <a href="search-grid.html" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="icon-star fa-2x"></i></a>
+                    <!--<a href="search-grid.html" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="icon-star fa-2x"></i></a>-->
                     <a href="javascript:window.print()" class="btn btn-sm btn-transparent–border ct-u-text--white"><i class="icon-printer fa-2x"></i></a>
                 </div>
             </div>
@@ -199,7 +199,7 @@
                 <div class="col-md-8 col-lg-9">
                     <div class="ct-u-displayTableVertical">
                         <div class="ct-u-displayTableCell text-left">
-                            <i class="fa fa-clock-o"></i><h6>Last Updated: {{ person.modified|default:"" }}</h6>
+                            <i class="fa fa-clock-o"></i><h6>Last Updated: {{ person.updated_at|default:"" }}</h6>
                         </div>
                     </div>
                 </div>

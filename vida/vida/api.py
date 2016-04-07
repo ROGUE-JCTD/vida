@@ -62,8 +62,7 @@ class PersonResource(ModelResource):
                     Q(description__icontains=number_val) |
                     Q(notes__icontains=string_val) |
                     Q(shelter_id__exact=string_val) |
-                    Q(barcode__exact=string_val) |
-                    Q(id__exact=number_val)
+                    Q(barcode__exact=string_val)
                 )
             return custom_query
 
