@@ -8,4 +8,4 @@ class AddressAdmin(admin.OSMGeoAdmin):
     search_fields = ['address_line1', 'state_province', 'city']
 
 
-admin.site.register(Address, AddressAdmin)
+#admin.site.register(Address, AddressAdmin)
