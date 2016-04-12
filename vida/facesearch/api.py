@@ -167,11 +167,12 @@ class FaceSearchResource(Resource):
         logger.debug("Building result package")
         for s in scores[:15]:
             currfilename = s[0]
-            print s
             logger.debug(currfilename)
             foundPeep = filter(lambda p: p['pic_filename'] == os.path.basename(s[0]), peeps)
-            logger.debug(foundPeep)
-            sorted_peeps.append(foundPeep[0])
+            if foundPeep is not None and len(foundPeep) > 0:
+                sorted_peeps.append(foundPeep[0])
+            else:
+                logger.info("Found picture with no link person " + currfilename)
 
         # bundle the search results
         bundle.obj.name = bundle.data[u'file'].name
