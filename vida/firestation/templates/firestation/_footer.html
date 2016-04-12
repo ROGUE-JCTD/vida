@@ -27,8 +27,12 @@
                                 <a class="text-capitalize" href="{% url 'persons_list' %}">Browse People</a>
                             </div>
                             <div class="col-md-6">
+                              {% if request.user.is_anonymous %}
                                 <a class="text-capitalize" href="{% url 'login' %}">Login</a>
-                                <a class="text-capitalize" href="{% url 'registration_register' %}">Register</a>
+                              {% else %}
+                                <a class="text-capitalize" href="{% url 'logout' %}">Logout</a>
+                              {% endif %}
+                              <!--<a class="text-capitalize" href="{% url 'registration_register' %}">Register</a>-->
                             </div>
                         </div>
                     </div>

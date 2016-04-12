@@ -29,12 +29,12 @@ class MinorCivilDivisionAdmin(admin.OSMGeoAdmin):
     list_filter = ['state_name', 'fcode']
     search_fields = ['minorcivildivision_name', 'state_name']
 
-admin.site.register(Reserve, ReserveAdmin)
-admin.site.register(IncorporatedPlace, IncorporatedPlaceAdmin)
-admin.site.register(UnincorporatedPlace, IncorporatedPlaceAdmin)
-admin.site.register(CountyorEquivalent, CountyOrEquivalentAdmin)
-admin.site.register(MinorCivilDivision, MinorCivilDivisionAdmin)
+#admin.site.register(Reserve, ReserveAdmin)
+#admin.site.register(IncorporatedPlace, IncorporatedPlaceAdmin)
+#admin.site.register(UnincorporatedPlace, IncorporatedPlaceAdmin)
+#admin.site.register(CountyorEquivalent, CountyOrEquivalentAdmin)
+#admin.site.register(MinorCivilDivision, MinorCivilDivisionAdmin)
 
-for model in [GovUnits, NativeAmericanArea, StateorTerritoryHigh]:
-    admin.site.register(model, GovUnitsAdmin)
+#for model in [GovUnits, NativeAmericanArea, StateorTerritoryHigh]:
+    #admin.site.register(model, GovUnitsAdmin)
 
