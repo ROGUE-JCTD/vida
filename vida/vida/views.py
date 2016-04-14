@@ -1,21 +1,8 @@
 from django.views import generic
-from tastypie.resources import ModelResource, ALL
 from django.db.models import Q
-from django.db.models import Max, Min
 import helpers
 
 from vida.vida.models import Person, Shelter
-
-# class DISTScoreContextMixin(object):
-#
-#     @staticmethod
-#     def add_dist_values_to_context():
-#         context = {}
-#         score_metrics = Person.objects.all().aggregate(Max('age'), Min('age'))
-#         context['dist_max'] = score_metrics['age__max']
-#         context['dist_min'] = score_metrics['age__min']
-#
-#         return context
 
 class PersonIndexView(generic.ListView):
     model = Person

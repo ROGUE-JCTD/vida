@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from .vida_core.forms import VIDAPasswordResetForm
 from .vida_core.views import ForgotUsername
-from .firestation.api import StaffingResource, FireStationResource, FireDepartmentResource
+from .firestation.api import StaffingResource
 from .vida.api import PersonResource, ShelterResource
 from .vida.views import PersonIndexView, PersonDetailView, ShelterDetailView
 from fileservice.api import FileItemResource
@@ -11,17 +11,18 @@ from tastypie.api import Api
 from firestation.views import Home
 from facesearch.api import FaceSearchResource
 from tilebundler.api import TilesetResource
+from django.contrib.sites.models import Site
 
 admin.autodiscover()
 v1_api = Api(api_name='v1')
 v1_api.register(StaffingResource())
-v1_api.register(FireStationResource())
-v1_api.register(FireDepartmentResource())
 v1_api.register(PersonResource())
 v1_api.register(ShelterResource())
 v1_api.register(FileItemResource())
 v1_api.register(FaceSearchResource())
 v1_api.register(TilesetResource())
+
+admin.site.unregister(Site)
 
 
 urlpatterns = patterns('',
