@@ -1,10 +1,11 @@
 from django.views import generic
 from django.db.models import Q
+from vida.vida_core.mixins import LoginRequiredMixin
 import helpers
 
 from vida.vida.models import Person, Shelter
 
-class PersonIndexView(generic.ListView):
+class PersonIndexView(LoginRequiredMixin, generic.ListView):
     model = Person
     paginate_by = 30
     queryset = Person.objects.all()
@@ -92,11 +93,11 @@ class PersonIndexView(generic.ListView):
         return queryset
 
 
-class PersonDetailView(generic.DetailView):
+class PersonDetailView(LoginRequiredMixin, generic.DetailView):
     model = Person
     template_name = 'vida/person_detail.html'
 
 
-class ShelterDetailView(generic.DetailView):
+class ShelterDetailView(LoginRequiredMixin, generic.DetailView):
     model = Shelter
     template_name = 'vida/shelter_detail.html'
