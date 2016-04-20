@@ -26,12 +26,12 @@ STATSD_PATCHES = [
         'django_statsd.patches.cache',
 ]
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': os.getenv('MEMCACHE_LOCATION', '127.0.0.1:11211'),
-    }
-}
+#CACHES = {
+#    'default': {
+#        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#        'LOCATION': os.getenv('MEMCACHE_LOCATION', '127.0.0.1:11211'),
+#    }
+#}
 
 AWS_STORAGE_BUCKET_NAME = 'vida-static'
 COMPRESS_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
