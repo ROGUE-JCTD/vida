@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from tastypie.resources import ModelResource, ALL, ALL_WITH_RELATIONS
 from tastypie.utils import trailing_slash
-from tastypie.authentication import BasicAuthentication
+from tastypie.authentication import BasicAuthentication, Authentication, SessionAuthentication, MultiAuthentication
 from tastypie.authorization import Authorization
 from tastypie import fields
 from django.contrib.auth import get_user_model
@@ -69,7 +69,7 @@ class PersonResource(ModelResource):
 
         queryset = Person.objects.all()
         excludes = ['start_date', 'stop_date']
-        authentication = BasicAuthentication()
+        authentication = MultiAuthentication(SessionAuthentication(), BasicAuthentication())
         authorization = Authorization()
         filtering = {
             'family_name': ALL,
@@ -214,7 +214,8 @@ class ShelterResource(ModelResource):
 
     class Meta:
         queryset = Shelter.objects.all()
-        authentication = BasicAuthentication()
+        authentication = MultiAuthentication(SessionAuthentication(), BasicAuthentication())
+
 
     def determine_format(self, request):
         return 'application/json'
