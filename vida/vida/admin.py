@@ -33,9 +33,15 @@ class ShelterAdmin(admin.GeoModelAdmin):
     list_display = ('name', 'created_by', 'neighborhood')
     search_fields = ['name', 'street_and_number', 'city', 'province_or_state', 'neighborhood', 'uuid']
 
-    default_lon = -61.45
-    default_lat = 10.65
-    default_zoom = 12
+    # World
+    default_lon = -30
+    default_lat = 25
+    default_zoom = 2
+
+    # Port of Spain
+    #default_lon = -61.45
+    #default_lat = 10.65
+    #default_zoom = 12
 
     def save_model(self, request, obj, form, change):
         obj.uuid = str(uuid.uuid4()).decode('unicode-escape') # Make new uuid for shelter
