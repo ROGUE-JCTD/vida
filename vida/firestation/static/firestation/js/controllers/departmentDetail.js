@@ -65,29 +65,72 @@
 
       })
 
-    .controller('personController', function($scope, $rootScope, $http, shelterServ) {
+    .controller('personController', function($scope, $rootScope, $http, shelterServ, personServ) {
         $scope.shelterList = [];
         $scope.current_shelter = {};
             $scope.personHistory = [];
 
-        $scope.getShelterByUUID = function(id) {
-          var shelter = shelterServ.getShelterByUUID(id);
+        $scope.checkShelterByUUID = function(shelter_uuid, person_uuid) {
+          var shelter = shelterServ.getShelterByUUID(shelter_uuid);
+          var person = personServ.getPersonByUUID(person_uuid);
+
           if (shelter) {
             document.getElementById("shelterID").innerHTML = '<div class="ct-u-displayTableCell">' +
-              '<span class="ct-fw-600">Current Shelter</span></div>' +
+              '<span class="ct-fw-600">Current Location</span></div>' +
               '<div class="ct-u-displayTableCell text-right">' +
+                // Show Shelter Name
               '<span>' + shelter.name + '   </span>' +
+                // Show Link to Shelter
               '<a style="display: inline-block;"' +
               'class="fa fa-chevron-right trigger" href="/shelters/' + shelter.id + '\/" ></a></div> </div>';
             return shelter;
-          } else
-            return undefined;
+          } else {
+            if (person) {
+              // Check if person has Geometry
+              if (person.geom) {
+
+                var split_geom = person.geom.split('(')[1].split(')')[0].split(' ');
+                var personLocation = {};
+                personLocation.lat = split_geom[0];
+                personLocation.long = split_geom[1];
+
+                // Is there a Geom to display?
+                var hasGeom_NotZero = true;
+
+                // if both are 0.000, there is no Geom
+                var lat = Number(Number(personLocation.lat).toFixed(3));
+                var long = Number(Number(personLocation.long).toFixed(3));
+                if (lat === 0.000 && long === 0.000)
+                  hasGeom_NotZero = false;
+
+                if (hasGeom_NotZero) {
+                  document.getElementById("shelterID").innerHTML = '<div class="ct-u-displayTableCell">' +
+                    '<span class="ct-fw-600">Current Location</span></div>' +
+                    '<div class="ct-u-displayTableCell text-right"><span>' +
+
+                      // Show Geom Data
+                    '<b>Lat:</b> ' + Number(personLocation.lat).toFixed(5) + '<br>' +
+                    '<b>Long:</b> ' + Number(personLocation.long).toFixed(5) + '</span>';
+
+                  return person.geom;
+                } else
+                  return undefined;
+              } else
+               return undefined;
+            } else
+              return undefined;
+          }
         };
 
         $scope.getAllShelters = function() {
           shelterServ.getAllShelters(function() {});
         };
 
+        $scope.getAllPeople = function() {
+          personServ.getAllPeople(function() {});
+        };
+
         $scope.getAllShelters();
+        $scope.getAllPeople();
     })
 })();

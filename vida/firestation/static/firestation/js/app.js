@@ -9,6 +9,7 @@
       'fireStation.performanceScoreController',
       'fireStation.mapService',
       'fireStation.shelterService',
+      'fireStation.personService',
       'fireStation.gauge',
       'fireStation.search',
       'fireStation.graphs'
