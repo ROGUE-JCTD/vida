@@ -215,9 +215,13 @@
                         <h3>Person Details</h3>
                     </div>
                     <div class="text-center ct-u-marginBottom20">
+                      {% if person.pic_filename != None %}
                         <img src="/api/v1/fileservice/{{ person.pic_filename }}/download/" width="50%" height="50%"
-                            onerror="if (this.src != 'http://dismagazine.com/uploads/2011/08/notw_silhouette-1.jpg')
-                            this.src = 'http://dismagazine.com/uploads/2011/08/notw_silhouette-1.jpg';">
+                             onerror="if (this.src != 'http://dismagazine.com/uploads/2011/08/notw_silhouette-1.jpg')
+                             this.src = 'http://dismagazine.com/uploads/2011/08/notw_silhouette-1.jpg';">
+                      {% else %}
+                        <img src="http://dismagazine.com/uploads/2011/08/notw_silhouette-1.jpg">
+                      {% endif %}
                     </div>
                     <div class="ct-u-displayTableVertical ct-productDetails">
                       <div class="ct-u-displayTableRow">
