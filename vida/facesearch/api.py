@@ -5,10 +5,11 @@ from tastypie.authentication import BasicAuthentication
 from tastypie.authorization import Authorization
 from tastypie.bundle import Bundle
 from tastypie.resources import Resource
-from vida.fileservice.helpers import get_fileservice_files, get_filename_absolute, get_gallery_file
+from vida.fileservice.helpers import get_fileservice_files, get_filename_absolute, get_fileservice_dir, get_gallery_file
 from vida.vida.models import Person
 from vida import br
 from helpers import reindex_gallery
+import subprocess
 
 import hashlib
 import os
@@ -125,38 +126,42 @@ class FaceSearchResource(Resource):
         destination_file.flush()
         os.fsync(destination_file) # Need this, we were not getting all bytes written to file before proceeding
 
-        facetmpl = br.br_load_img(file_data, len(file_data))
-        query = br.br_enroll_template(facetmpl)
-        nqueries = br.br_num_templates(query)
-        logger.debug("Templates found in query pic: " + str(nqueries))
+
+#        scoresmat = br.br_compare_template_lists(galTemplateList, query)
+        temp_gal = tempfile.NamedTemporaryFile(suffix='.gal')
+        args = ['br', '-algorithm', 'FaceRecognition', '-enroll', destination_file.name, temp_gal.name]
+        logger.debug("Enrolling " + destination_file.name + ' as ' + temp_gal.name)
+        subprocess.call(args)
+        out_file = tempfile.NamedTemporaryFile(suffix='.csv')
         galleryGalPath = get_gallery_file()
-        galGallery = br.br_make_gallery(galleryGalPath)
-        galTemplateList = br.br_load_from_gallery(galGallery)
+        args = args[:3] + ['-compare', galleryGalPath, temp_gal.name, out_file.name]
+        logger.debug(args);
+        subprocess.call(args)
 
-        # compare and collect scores
-        ntargets = br.br_num_templates(galTemplateList)
-        logger.debug("Templates found in gallery: " + str(ntargets))
-        scoresmat = br.br_compare_template_lists(galTemplateList, query)
+        with open(out_file.name, 'r') as scores_file:
+            files_line = scores_file.readline().strip().split(',')[1:]
+            scores_line = scores_file.readline().strip().split(',')
+            probe = scores_line[0]
+            score_list = scores_line[1:]
+            scores= []
+            for f, s in zip(files_line, score_list):
+                logger.debug('%s -> %s: %s' % (probe, f, s))
+                scores.append((os.path.basename(f), s))
 
-        scores = []
-        logger.debug("Appending scores")
-        for r in range(ntargets):
-            for c in range(nqueries):
-                logger.debug(str(r) + ',' + str(c))
-                # This is not a percentage match, it's a relative score
-                similarity = br.br_get_matrix_output_at(scoresmat, r, c)
-                logger.debug("\tsimilarity = " + str(similarity))
-                tmpl = br.br_get_template(galTemplateList, r)
-                logger.debug("Getting filename")
-                imgFileName = br.br_get_filename(tmpl)
-                logger.debug("\t" + imgFileName)
-                scores.append((os.path.basename(imgFileName), similarity))
+#        for r in range(ntargets):
+#            for c in range(nqueries):
+#                logger.debug(str(r) + ',' + str(c))
+#                # This is not a percentage match, it's a relative score
+#                similarity = br.br_get_matrix_output_at(scoresmat, r, c)
+#                logger.debug("\tsimilarity = " + str(similarity))
+#                tmpl = br.br_get_template(galTemplateList, r)
+#                logger.debug("Getting filename")
+#                imgFileName = br.br_get_filename(tmpl)
+#                logger.debug("\t" + imgFileName)
+#                scores.append((os.path.basename(imgFileName), similarity))
 
         destination_file.close()
-        br.br_free_template(facetmpl)
-        br.br_free_template_list(query)
-        br.br_free_template_list(galTemplateList)
-        br.br_close_gallery(galGallery)
+
 
         peeps = Person.objects.filter(pic_filename__in=dict(scores).keys()).values()
 
