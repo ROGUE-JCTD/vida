@@ -99,6 +99,7 @@ class Person(models.Model):
     injury = models.CharField(blank=True, max_length=100)
     nationality = models.CharField(blank=True, max_length=100)
     status = models.CharField(blank=True, max_length=100)
+    race = models.CharField(blank=True, max_length=100)
 
     pic_filename = models.CharField(null=True, blank=True, max_length=50)
 
@@ -108,7 +109,7 @@ class Person(models.Model):
     # we may not care about all fields being logged as changed
     @property
     def change_track_fields(self):
-        return 'given_name', 'family_name', 'gender', 'age', 'mothers_given_name', 'fathers_given_name','date_of_birth', 'street_and_number', 'neighborhood', 'city', 'province_or_state', 'phone_number', 'shelter_id', 'barcode', 'injury', 'nationality', 'status', 'pic_filename'
+        return 'given_name', 'family_name', 'gender', 'age', 'mothers_given_name', 'fathers_given_name','date_of_birth', 'street_and_number', 'neighborhood', 'city', 'province_or_state', 'phone_number', 'shelter_id', 'barcode', 'injury', 'nationality', 'status', 'race', 'pic_filename'
 
     def __init__(self, *args, **kwargs):
         super(Person, self).__init__(*args, **kwargs)

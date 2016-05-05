@@ -14,8 +14,13 @@
     <a href="/persons/{{ person.id }}/">
         <div class="ct-main-content">
             <div class="ct-imageBox personImgContainer">
+              {% if person.pic_filename != None %}
                 <img src="/api/v1/fileservice/{{ person.pic_filename }}/download/"
-                     onerror="if (this.src != 'http://dismagazine.com/uploads/2011/08/notw_silhouette-1.jpg') this.src = 'http://dismagazine.com/uploads/2011/08/notw_silhouette-1.jpg';">
+                     onerror="if (this.src != 'http://dismagazine.com/uploads/2011/08/notw_silhouette-1.jpg')
+                     this.src = 'http://dismagazine.com/uploads/2011/08/notw_silhouette-1.jpg';">
+              {% else %}
+                <img src="http://dismagazine.com/uploads/2011/08/notw_silhouette-1.jpg">
+              {% endif %}
               <i class="fa fa-eye"></i>
             </div>
             <div class="ct-main-text">
