@@ -91,8 +91,8 @@
 
                 var split_geom = person.geom.split('(')[1].split(')')[0].split(' ');
                 var personLocation = {};
-                personLocation.lat = split_geom[0];
-                personLocation.long = split_geom[1];
+                personLocation.long = split_geom[0];
+                personLocation.lat = split_geom[1];
 
                 // Is there a Geom to display?
                 var hasGeom_NotZero = true;
@@ -109,8 +109,8 @@
                     '<div class="ct-u-displayTableCell text-right"><span>' +
 
                       // Show Geom Data
-                    '<b>Lat:</b> ' + Number(personLocation.lat).toFixed(5) + '<br>' +
-                    '<b>Long:</b> ' + Number(personLocation.long).toFixed(5) + '</span>';
+                    '<b>Long:</b> ' + Number(personLocation.long).toFixed(5) + '<br>' +
+                    '<b>Lat:</b> ' + Number(personLocation.lat).toFixed(5) + '</span>';
 
                   return person.geom;
                 } else
